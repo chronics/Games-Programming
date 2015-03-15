@@ -1,4 +1,5 @@
 #include "Sprite.h"
+#include "Error.h"
 
 
 Sprite::Sprite()
