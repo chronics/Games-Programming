@@ -36,6 +36,18 @@ void gameEngine::initSystem()
 		fatalError("SDL_Init Error");
 	}
 
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		
+	glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+
+	initShaders();
+}
+
+void gameEngine::initShaders()
+{
+	_colourProgram.createShader("shaders/basicShader.vert", "shaders/basicShader.frag");
+	_colourProgram.addAttribute("vertexPosition");
+	_colourProgram.linkShaders();
 }
 
 void gameEngine::createWindow()
@@ -120,11 +132,13 @@ void gameEngine::processInput()
 void gameEngine::renderGame()
 {
 	glClearDepth(1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
+	_colourProgram.use();
 
 	_sprite.draw();
+
+	_colourProgram.unuse();
 
 	SDL_GL_SwapWindow(_window);
 	

@@ -8,6 +8,7 @@
 #include <GL\glew.h>
 
 #include "Sprite.h"
+#include "GLSLProgram.h"
 
 enum class GameState {PLAY, EXIT};
 
@@ -27,6 +28,7 @@ private:
 	GameState _GameState;
 
 	void initSystem();
+	void initShaders();
 
 	void createWindow();
 	void setAttributes(int major,int minor);
@@ -38,5 +40,6 @@ private:
 	void renderGame();
 
 	Sprite _sprite;
+	GLSLProgram _colourProgram;
 };
 
