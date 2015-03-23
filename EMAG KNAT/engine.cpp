@@ -41,16 +41,16 @@ void engine::initSystem()
 
 void engine::createWindow()
 {
-	std::cout << "Fullscreen will be set to 768p\nFullscreen? (y/n): ";
+	/*std::cout << "Fullscreen will be set to 768p\nFullscreen? (y/n): ";
 	char inputc = 'y';
 	std::cin >> inputc;
 	std::cout << "Loading... (this may take a while!) ...\n\n\n";
 
 	if (inputc == 'y' || inputc == 'Y')
 	{
-	_window = SDL_CreateWindow("Games Programming", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHight, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
+	_window = SDL_CreateWindow("Games Programming", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN | SDL_WINDOW_SHOWN);
 	}
-	else
+	else*/
 	_window = SDL_CreateWindow("Games Programming", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
 
 	if (_window == nullptr)
@@ -65,7 +65,7 @@ void engine::setAttributes(int major, int minor)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	std::cout << "Set OpenGL and context to version " << major << "." << minor << " OK!\n";
+	std::cout << "Set OpenGL and context to version " << major << "." << minor << " OK!\n\n";
 }
 
 void engine::createContext()

@@ -3,7 +3,7 @@
 #include "vertexData.h"
 
 //vertex object 1 params
-glm::mat4 modelMatrix, viewMatrix, projectionMatrix, rotationMatrix, translationMatrix;
+glm::mat4 modelMatrix, viewMatrix, projectionMatrix, rotationMatrix, translationMatrix, modelMatrix1;
 
 Renderer::Renderer()
 {
@@ -136,10 +136,10 @@ void Renderer::initializeProgram()
 
 void Renderer::initializeVertexBuffer()
 {
-	//glGenBuffers(1, &vertexBufferObject2D);
-	//	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject2D);
-	//	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData2D), vertexData2D, GL_STATIC_DRAW);
-	//	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glGenBuffers(1, &vertexBufferObject2D);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject2D);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(triangles), triangles, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	glGenBuffers(1, &vertexBufferObject);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
@@ -157,6 +157,15 @@ void Renderer::render()
 	glEnableVertexAttribArray(positionLocation);
 	glEnableVertexAttribArray(colorLocation);
 
+	//triangle
+	size_t colorData1 = sizeof(triangles) / 2;
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject2D);
+	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData1);
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix1));
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	//cube
 	size_t colorData = sizeof(cube) / 2;
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject); 
 	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0); 
