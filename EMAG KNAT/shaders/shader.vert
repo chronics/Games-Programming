@@ -1,21 +1,13 @@
 #version 140
 
-// In/out variables
-in vec3 vertex;
-in vec2 uv;
-out vec2 uvIn;
-
-// Model matrix
-uniform mat4 model;
-
-// Camera uniforms
-uniform mat4 cameraProjection;
-uniform mat4 cameraView;
-
-// Changed calculations to be in tangent space
+in vec4 position;
+in vec4 color;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+smooth out vec4 theColor;
 void main()
 {
-	// Calculate position using MVP
-	gl_Position = cameraProjection * cameraView * model * vec4(vertex, 1.0);
-	uvIn = uv;	
+   gl_Position = projectionMatrix * viewMatrix * modelMatrix * position;
+   theColor = color; //just pass on the color. It's a **smooth**, so will be interpolated
 }
