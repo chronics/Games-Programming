@@ -20,6 +20,8 @@
 
 enum class GameState { PLAY, EXIT };
 
+
+
 class engine
 {
 public:
@@ -46,6 +48,8 @@ private:
 	void gameLoop();
 
 	void processInput();
+	
+	void camera();
 
 	void renderGame();	
 };

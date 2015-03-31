@@ -1,4 +1,6 @@
 #pragma once
+
+#include "Error.h"
 #include "engine.h"
 
 class Renderer
@@ -14,11 +16,14 @@ public:
 	void runShaders();
 	void render();
 
+	void camera();
+
 private:
 
 	void initializeProgram();
 	void initializeVertexBuffer();
 
+	
 	
 };
 

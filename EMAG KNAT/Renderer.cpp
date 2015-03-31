@@ -3,12 +3,32 @@
 #include "vertexData.h"
 
 //vertex object 1 params
-glm::mat4 modelMatrix, viewMatrix, projectionMatrix, rotationMatrix, translationMatrix, modelMatrix1;
+glm::mat4 modelMatrix, viewMatrix, projectionMatrix, rotationMatrix, translationMatrix, modelMatrix1 ;
+
+// camera variables
+glm::vec3 eyePoint = glm::vec3(0, 0, 5);
+glm::vec3 lookAtPoint = glm::vec3(0, 0, 0);
+glm::vec3 upVector = glm::vec3(0, 1, 0);
+
+glm::vec3 eyePointMove = glm::vec3(0, 0, 0);
+glm::vec3 eyePointAcceleration = glm::vec3(0.025, 0.025, 0.025);
+
+int mousePosX, mousePosY;
+float horizontalAngle = 3.14f;
+float verticalAngle = 0.0f;
+float speed = 2.0f;
+float mouseSpeed = 0.005f;
+
+glm::vec3 rightVar(
+	sin(horizontalAngle - 3.14f / 2.0f),0,
+	cos(horizontalAngle - 3.14f / 2.0f));
+
+
+
 
 Renderer::Renderer()
 {
 }
-
 
 Renderer::~Renderer()
 {
@@ -136,14 +156,16 @@ void Renderer::initializeProgram()
 
 void Renderer::initializeVertexBuffer()
 {
+	/*
 	glGenBuffers(1, &vertexBufferObject2D);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject2D);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(triangles), triangles, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
+	*/
+
 	glGenBuffers(1, &vertexBufferObject);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(tankbody), tankbody, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -157,16 +179,8 @@ void Renderer::render()
 	glEnableVertexAttribArray(positionLocation);
 	glEnableVertexAttribArray(colorLocation);
 
-	//triangle
-	size_t colorData1 = sizeof(triangles) / 2;
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject2D);
-	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData1);
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix1));
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-
 	//cube
-	size_t colorData = sizeof(cube) / 2;
+	size_t colorData = sizeof(tankbody) / 2;
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject); 
 	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0); 
 	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData); 
@@ -175,4 +189,37 @@ void Renderer::render()
 
 	glDisableVertexAttribArray(0); 
 	glUseProgram(0);
+}
+
+void Renderer::camera()
+{
+	const glm::vec3 unitX = glm::vec3(1, 0, 0);
+	const glm::vec3 unitY = glm::vec3(0, 1, 0);
+	const glm::vec3 unitZ = glm::vec3(0, 0, 1);
+	const glm::vec3 unit45 = glm::normalize(glm::vec3(0, 1, 1));
+
+	//camera
+	eyePoint += eyePointMove;
+
+	glm::vec3 lookAtPoint(
+		cos(verticalAngle) * sin(horizontalAngle),
+		sin(verticalAngle),
+		cos(verticalAngle) * cos(horizontalAngle)
+		);
+
+	glm::vec3 rightVar(
+		sin(horizontalAngle - 3.14f / 2.0f),
+		0,
+		cos(horizontalAngle - 3.14f / 2.0f)
+		);
+
+	glm::vec3 upVector = glm::cross(rightVar, lookAtPoint);
+
+	viewMatrix = glm::lookAt(eyePoint, (eyePoint + lookAtPoint), upVector);
+	float fovyRadians = glm::radians(90.0f);
+	float aspectRatio = 1.0f;
+	float nearClipPlane = 0.1f;
+	float farClipPlane = 100.0f;
+
+	projectionMatrix = glm::perspective(fovyRadians, aspectRatio, nearClipPlane, farClipPlane);
 }

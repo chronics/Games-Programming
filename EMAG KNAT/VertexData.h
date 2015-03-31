@@ -3,9 +3,55 @@
 #include <string>
 #include <SDL2/SDL.h>
 
+//note culling is enabled with the counterclockwise rotation, plan accordingly (x, y, z, w)
+const float tankbody[] = {
+
+	//face top A
+	0.2f, 0.3f, -0.2f, 1.0f, //top right
+	-0.2f, 0.3f, -0.2f, 1.0f, //top left
+	0.2f, -0.2f, -0.2f, 1.0f, //bottom right
+
+	//face top B
+	-0.2f, 0.3f, -0.2f, 1.0f, //top left
+	-0.2f, -0.2f, -0.2f, 1.0f, // bottom left
+	0.2f, -0.2f, -0.2f, 1.0f, //bottom right
+
+
+
+	//face bottom A
+	0.2f, 0.3f, 0.2f, 1.0f, //top right
+	-0.2f, 0.3f, 0.2f, 1.0f, //top left
+	0.2f, -0.2f, 0.2f, 1.0f, //bottom right
+
+	//face bottom B
+	-0.2f, 0.3f, 0.2f, 1.0f, //top left
+	-0.2f, -0.2f, 0.2f, 1.0f, // bottom left
+	0.2f, -0.2f, 0.2f, 1.0f, //bottom right
+
+	//colour data
+	//blue top
+	0.0f, 0.0f, 1.0f, 1.0f,
+	0.0f, 0.0f, 1.0f, 1.0f,
+	0.0f, 0.0f, 1.0f, 1.0f,
+
+	0.0f, 0.0f, 1.0f, 1.0f,
+	0.0f, 0.0f, 1.0f, 1.0f,
+	0.0f, 0.0f, 1.0f, 1.0f,
+
+	//red bottom
+	1.0f, 0.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f,
+
+	1.0f, 0.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f, 
+};
+
 const float cube[] = {
 
-	//positions
+	//body positions
+	//face 1
 	-0.25f, -0.25f, -0.25f, 1.0f,
 	-0.25f, -0.25f, 0.25f, 1.0f,
 	-0.25f, 0.25f, 0.25f, 1.0f,
@@ -14,6 +60,7 @@ const float cube[] = {
 	-0.25f, 0.25f, 0.25f, 1.0f,
 	-0.25f, 0.25f, -0.25f, 1.0f,
 
+	//face 2
 	0.25f, 0.25f, -0.25f, 1.0f,
 	-0.25f, -0.25f, -0.25f, 1.0f,
 	-0.25f, 0.25f, -0.25f, 1.0f,
@@ -22,6 +69,7 @@ const float cube[] = {
 	0.25f, -0.25f, -0.25f, 1.0f,
 	-0.25f, -0.25f, -0.25f, 1.0f,
 
+	//face 3
 	0.25f, -0.25f, 0.25f, 1.0f,
 	-0.25f, -0.25f, -0.25f, 1.0f,
 	0.25f, -0.25f, -0.25f, 1.0f,
@@ -30,6 +78,7 @@ const float cube[] = {
 	-0.25f, -0.25f, 0.25f, 1.0f,
 	-0.25f, -0.25f, -0.25f, 1.0f,
 
+	//face 4
 	-0.25f, 0.25f, 0.25f, 1.0f,
 	-0.25f, -0.25f, 0.25f, 1.0f,
 	0.25f, -0.25f, 0.25f, 1.0f,
@@ -38,6 +87,7 @@ const float cube[] = {
 	-0.25f, 0.25f, 0.25f, 1.0f,
 	0.25f, -0.25f, 0.25f, 1.0f,
 
+	//face 5
 	0.25f, 0.25f, 0.25f, 1.0f,
 	0.25f, -0.25f, -0.25f, 1.0f,
 	0.25f, 0.25f, -0.25f, 1.0f,
@@ -46,6 +96,7 @@ const float cube[] = {
 	0.25f, 0.25f, 0.25f, 1.0f,
 	0.25f, -0.25f, 0.25f, 1.0f,
 
+	//face 6
 	0.25f, 0.25f, 0.25f, 1.0f,
 	0.25f, 0.25f, -0.25f, 1.0f,
 	-0.25f, 0.25f, -0.25f, 1.0f,
@@ -53,8 +104,11 @@ const float cube[] = {
 	0.25f, 0.25f, 0.25f, 1.0f,
 	-0.25f, 0.25f, -0.25f, 1.0f,
 	-0.25f, 0.25f, 0.25f, 1.0f,
+
+
 
 	//colors
+	//blue
 	0.0f, 0.0f, 1.0f, 1.0f,
 	0.0f, 0.0f, 1.0f, 1.0f,
 	0.0f, 0.0f, 1.0f, 1.0f,
