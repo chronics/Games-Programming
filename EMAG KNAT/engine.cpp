@@ -2,6 +2,26 @@
 
 Renderer _draw;
 
+
+
+// camera variables
+glm::vec3 eyePoint = glm::vec3(0, 0, 5);
+glm::vec3 lookAtPoint = glm::vec3(0, 0, 0);
+glm::vec3 upVector = glm::vec3(0, 1, 0);
+
+glm::vec3 eyePointMove = glm::vec3(0, 0, 0);
+glm::vec3 eyePointAcceleration = glm::vec3(0.025, 0.025, 0.025);
+
+int mousePosX, mousePosY;
+float horizontalAngle = 3.14f;
+float verticalAngle = 0.0f;
+float speed = 2.0f;
+float mouseSpeed = 0.005f;
+
+glm::vec3 rightVar(
+	sin(horizontalAngle - 3.14f / 2.0f), 0,
+	cos(horizontalAngle - 3.14f / 2.0f));
+
 engine::engine()
 {
 	_window = nullptr;
@@ -41,6 +61,8 @@ void engine::initSystem()
 
 void engine::createWindow()
 {
+	bool cam = true;
+
 	std::cout << "Fullscreen will be set to 768p\nFullscreen? (y/n): ";
 	char inputc = 'y';
 	std::cin >> inputc;
@@ -48,10 +70,10 @@ void engine::createWindow()
 
 	if (inputc == 'y' || inputc == 'Y')
 	{
-	_window = SDL_CreateWindow("Games Programming", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
+		_window = SDL_CreateWindow("Games Programming", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
 	}
 	else
-	_window = SDL_CreateWindow("Games Programming", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE );
+		_window = SDL_CreateWindow("Games Programming", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE );
 
 	if (_window == nullptr)
 	{
@@ -112,6 +134,9 @@ void engine::initGlew()
 
 	std::cout << "\nVendor: " << glGetString(GL_VENDOR) << std::endl;
 	std::cout << "Graphics Card: " << glGetString(GL_RENDERER) << "\n" << std::endl;
+
+	//i know its not ment to be hear but i need it!
+	
 }
 
 
@@ -138,6 +163,15 @@ void engine::processInput()
 				//hit escape to exit
 				case SDLK_ESCAPE:
 					_GameState = GameState::EXIT;
+
+				case SDLK_KP_5: eyePointMove.z -= eyePointAcceleration.z; break;
+				case SDLK_KP_0: eyePointMove.z += eyePointAcceleration.z; break;
+
+				case SDLK_KP_6: eyePointMove.x -= eyePointAcceleration.x; break;
+				case SDLK_KP_4: eyePointMove.x += eyePointAcceleration.x; break;
+
+				case SDLK_KP_8: eyePointMove.y -= eyePointAcceleration.y; break;
+				case SDLK_KP_2: eyePointMove.y += eyePointAcceleration.y; break;
 			}
 			break;
 
@@ -145,23 +179,65 @@ void engine::processInput()
 			case SDL_KEYUP:
 				switch (_event.key.keysym.sym)
 				{
-					
+				case SDLK_KP_5: eyePointMove.z += eyePointAcceleration.z; break;
+				case SDLK_KP_0: eyePointMove.z -= eyePointAcceleration.z; break;
+
+				case SDLK_KP_6: eyePointMove.x += eyePointAcceleration.x; break;
+				case SDLK_KP_4: eyePointMove.x -= eyePointAcceleration.x; break;
+
+				case SDLK_KP_8: eyePointMove.y += eyePointAcceleration.y; break;
+				case SDLK_KP_2: eyePointMove.y -= eyePointAcceleration.y; break;
 				}
 				break;
 			//mouse handling*/
 
 		case SDL_MOUSEMOTION:
-		{
+			{
 			
-		};
+			};
 			break;
 
 		default: //one dose not simply forget a default case
 			break;
-		
+			
 		}
 	}
 }
+
+void Renderer::camera(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
+{
+		const glm::vec3 unitX = glm::vec3(1, 0, 0);
+		const glm::vec3 unitY = glm::vec3(0, 1, 0);
+		const glm::vec3 unitZ = glm::vec3(0, 0, 1);
+		const glm::vec3 unit45 = glm::normalize(glm::vec3(0, 1, 1));
+
+		//camera
+		eyePoint += eyePointMove;
+
+		glm::vec3 lookAtPoint(
+			cos(verticalAngle) * sin(horizontalAngle),
+			sin(verticalAngle),
+			cos(verticalAngle) * cos(horizontalAngle)
+			);
+
+		glm::vec3 rightVar(
+			sin(horizontalAngle - 3.14f / 2.0f),
+			0,
+			cos(horizontalAngle - 3.14f / 2.0f)
+			);
+
+		glm::vec3 upVector = glm::cross(rightVar, lookAtPoint);
+
+		viewMatrix = glm::lookAt(eyePoint, (eyePoint + lookAtPoint), upVector);
+
+		float fovyRadians = glm::radians(90.0f);
+		float aspectRatio = 1.0f;
+		float nearClipPlane = 0.1f;
+		float farClipPlane = 100.0f;
+
+		projectionMatrix = glm::perspective(fovyRadians, aspectRatio, nearClipPlane, farClipPlane);
+}
+
 
 void engine::renderGame()
 {
@@ -172,6 +248,8 @@ void engine::renderGame()
 	
 
 	SDL_GL_SwapWindow(_window);
+
+	
 }
 
 void engine::gameLoop()
@@ -179,8 +257,9 @@ void engine::gameLoop()
 	while (_GameState != GameState::EXIT)
 	{
 		processInput();
-		_draw.camera();
+	
+		camera();
+
 		renderGame();
 	}
 }
-

@@ -16,7 +16,7 @@ public:
 	void runShaders();
 	void render();
 
-	void camera();
+	void camera(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 
 private:
 
