@@ -1,7 +1,8 @@
 #include "engine.h"
 
-Renderer _draw;
 
+Renderer _draw;
+Renderer* _cam;
 
 
 // camera variables
@@ -28,8 +29,6 @@ engine::engine()
 	_screenWidth = 600;
 	_screenHight = 600;
 	_GameState = GameState::PLAY;
-
-	
 }
 
 engine::~engine()
@@ -145,7 +144,6 @@ void engine::processInput()
 {
 	SDL_Event _event;
 
-		
 	while (SDL_PollEvent(&_event)) { 
 		switch (_event.type)
 		{
@@ -204,6 +202,8 @@ void engine::processInput()
 	}
 }
 
+glm::mat4 _viewMatrix, _projectionMatrix;
+
 void Renderer::camera(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
 		const glm::vec3 unitX = glm::vec3(1, 0, 0);
@@ -236,6 +236,9 @@ void Renderer::camera(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 		float farClipPlane = 100.0f;
 
 		projectionMatrix = glm::perspective(fovyRadians, aspectRatio, nearClipPlane, farClipPlane);
+
+		_viewMatrix = viewMatrix;
+		_projectionMatrix = projectionMatrix;
 }
 
 
@@ -248,8 +251,6 @@ void engine::renderGame()
 	
 
 	SDL_GL_SwapWindow(_window);
-
-	
 }
 
 void engine::gameLoop()
@@ -257,9 +258,7 @@ void engine::gameLoop()
 	while (_GameState != GameState::EXIT)
 	{
 		processInput();
-	
-		camera();
-
+		_cam->Renderer::camera(_viewMatrix, _projectionMatrix);
 		renderGame();
 	}
 }

@@ -15,12 +15,10 @@
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtc/type_ptr.hpp> 
 
-#include "Error.h"
 #include "Renderer.h"
+#include "Error.h"
 
 enum class GameState { PLAY, EXIT };
-
-
 
 class engine
 {

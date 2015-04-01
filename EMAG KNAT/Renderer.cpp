@@ -7,7 +7,7 @@ char inputc = 'y';
 
 
 //vertex object 1 params
-glm::mat4 modelMatrix, viewMatrix, projectionMatrix, rotationMatrix, translationMatrix, modelMatrix1 ;
+
 
 
 Renderer::Renderer()

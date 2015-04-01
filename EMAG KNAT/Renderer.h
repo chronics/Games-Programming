@@ -9,6 +9,8 @@ public:
 	Renderer();
 	~Renderer();
 
+	glm::mat4 modelMatrix, viewMatrix, projectionMatrix, rotationMatrix, translationMatrix, modelMatrix1;
+
 	GLint positionLocation, colorLocation, modelMatrixLocation, viewMatrixLocation, projectionMatrixLocation;
 
 	GLuint theProgram, vertexBufferObject, vertexBufferObject2D, vao;
@@ -23,7 +25,5 @@ private:
 	void initializeProgram();
 	void initializeVertexBuffer();
 
-	
-	
 };
 
