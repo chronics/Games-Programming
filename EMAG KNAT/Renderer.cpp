@@ -34,19 +34,19 @@ std::string LoadShaderFromFile(const std::string& filename)
 	std::string source;
 	std::string line;
 
-	file.open(filename);
+	file.open(filename); // file name passed in
 
-	if (file.is_open())
+	if (file.is_open()) // open the file
 	{
 		while (file.good())
 		{
 			getline(file, line);
-			source.append(line + "\n");
+			source.append(line + "\n"); // add the \n to the end of each line
 		}
 	}
 	else
 	{
-		std::cout << "Couldn't open shader: " << filename << std::endl;
+		std::cout << "Couldn't open shader: " << filename << std::endl; // bad error handeling
 	}
 
 	return source;
@@ -126,7 +126,7 @@ void Renderer::initializeProgram()
 {
 	std::vector<GLuint> shaderList;
 
-	std::string vertexSource = LoadShaderFromFile("shaders/shader.vert");
+	std::string vertexSource = LoadShaderFromFile("shaders/shader.vert"); // pass in the file path to the string var aand send to load shader from file
 	std::string fragmentSource = LoadShaderFromFile("shaders/shader.frag");
 
 	shaderList.push_back(createShader(GL_VERTEX_SHADER, vertexSource));

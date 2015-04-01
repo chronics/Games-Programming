@@ -8,7 +8,7 @@ engine::engine()
 	_window = nullptr;
 	_screenWidth = 600;
 	_screenHight = 600;
-	_GameState = GameState::PLAY;
+	_GameState = GameState::PLAY; // set game state to play, while in play mode the game will run
 }
 
 engine::~engine()
@@ -20,11 +20,11 @@ void engine::run()
 {
 	initSystem();
 	createWindow();
-	setAttributes(3, 3);
+	setAttributes(3, 3); // send the data 3, 3 to major and minor allowing the OpenGL version to be set to 3.3
 	createContext();
 	initGlew();
 
-	_draw.runShaders();
+	_draw.runShaders();// run the function runshaders from the render class
 
 	gameLoop();
 }
@@ -40,13 +40,13 @@ void engine::initSystem()
 
 void engine::createWindow()
 {
-	bool cam = true;
-
+	// ask the user if they want full screen or not
 	std::cout << "Fullscreen will be set to 768p\nFullscreen? (y/n): ";
 	char inputc = 'y';
 	std::cin >> inputc;
 	std::cout << "Loading... (this may take a while!) ...\n\n\n";
 
+	//set window mode depending on the user input
 	if (inputc == 'y' || inputc == 'Y')
 	{
 		_window = SDL_CreateWindow("Games Programming", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
@@ -56,7 +56,7 @@ void engine::createWindow()
 
 	if (_window == nullptr)
 	{
-		fatalError("SDL Window failed to open!");
+		fatalError("SDL Window failed to open!"); // error handeling 
 	}
 }
 
@@ -108,17 +108,15 @@ void engine::initGlew()
 	//EasterEgg Command
 	std::cout << "You want your freedom?\nTake it\nThat's what I'm counting on...\nI used to want you dead but\nNow I only want you gone...\n\n\n";
 
-	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-	std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl; // read the version of openGL and print to screen
+	std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl; // read the shader version and print to screen
 
-	std::cout << "\nVendor: " << glGetString(GL_VENDOR) << std::endl;
-	std::cout << "Graphics Card: " << glGetString(GL_RENDERER) << "\n" << std::endl;
+	std::cout << "\nVendor: " << glGetString(GL_VENDOR) << std::endl; // find the creater of the grahics card and print to screen
+	std::cout << "Graphics Card: " << glGetString(GL_RENDERER) << "\n" << std::endl; // read the version of the graphics card and print to screen
 
-	//i know its not ment to be hear but i need it!
-	
+	// tested on an NVIDIA GeForce GTX 650 TI BOOST/PCIe/SSE2  &  ATI AMD Radion HD 7600G
+
 }
-
-
 
 void engine::processInput()
 {
@@ -129,7 +127,7 @@ void engine::processInput()
 		{
 
 		case SDL_QUIT:
-			_GameState = GameState::EXIT;
+			_GameState = GameState::EXIT; // press the close button to switch game state
 			break;
 
 			//keydown handling - we should to the opposite on key-up for direction controls (generally)
@@ -138,7 +136,7 @@ void engine::processInput()
 			if (!_event.key.repeat)
 				switch (_event.key.keysym.sym)
 			{
-				//hit escape to exit
+				//hit escape to change gamestate
 				case SDLK_ESCAPE:
 					_GameState = GameState::EXIT;
 
@@ -173,7 +171,7 @@ void engine::renderGame()
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	_draw.render();
+	_draw.render(); // call the render function from the renderer class
 	
 	SDL_GL_SwapWindow(_window);
 }
@@ -184,6 +182,7 @@ void engine::gameLoop()
 	{
 		processInput();
 		_draw.camInput();
+		_draw.camera();
 		renderGame();
 	}
 }
