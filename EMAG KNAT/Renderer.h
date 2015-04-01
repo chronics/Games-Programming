@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Error.h"
 #include "engine.h"
+#include "Error.h"
 
 class Renderer
 {
@@ -18,12 +18,14 @@ public:
 	void runShaders();
 	void render();
 
-	void camera(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+	void camera();
+	void camInput();
 
 private:
 
 	void initializeProgram();
 	void initializeVertexBuffer();
 
+	
 };
 
