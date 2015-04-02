@@ -168,10 +168,6 @@ void Renderer::initializeVertexBuffer()
 
 void Renderer::render()
 {
-	camInput();
-	updateSim();
-
-
 	glUseProgram(theProgram);
 
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));

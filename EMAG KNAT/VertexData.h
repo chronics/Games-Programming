@@ -8,13 +8,13 @@ const float tankbody[] = {
 
 	//face top A
 	0.2f, 0.3f, -0.2f, 1.0f, //top right
-	-0.2f, 0.3f, -0.2f, 1.0f, //top left
 	0.2f, -0.2f, -0.2f, 1.0f, //bottom right
+	-0.2f, 0.3f, -0.2f, 1.0f, //top left
 
 	//face top B
 	-0.2f, 0.3f, -0.2f, 1.0f, //top left
-	-0.2f, -0.2f, -0.2f, 1.0f, // bottom left
 	0.2f, -0.2f, -0.2f, 1.0f, //bottom right
+	-0.2f, -0.2f, -0.2f, 1.0f, // bottom left
 
 
 
@@ -29,15 +29,30 @@ const float tankbody[] = {
 	0.2f, -0.2f, 0.2f, 1.0f, //bottom right
 
 
-	//face left A
-	-0.2, 0.3f, -0.2f, 1.0f, //top left
+	//face left A (side)
 	-0.2f, 0.3f, 0.2f, 1.0f, //top right
-	-0.2f, -0.2f, 0.2f, 1.0f, // bottom right
-
 	-0.2, 0.3f, -0.2f, 1.0f, //top left
 	-0.2f, -0.2f, 0.2f, 1.0f, // bottom right
-	-0.2, -0.3f, -0.2f, 1.0f, //top left
 
+	//face left A (side)
+	-0.2f, -0.2f, 0.2f, 1.0f, // bottom right
+	-0.2, 0.3f, -0.2f, 1.0f, //top left
+	-0.2, -0.2f, -0.2f, 1.0f, //bottom left
+
+	//face right A (side)
+	0.2f, 0.3f, 0.2f, 1.0f, //top right
+	0.2f, -0.2f, 0.2f, 1.0f, // bottom right
+	0.2, 0.3f, -0.2f, 1.0f, //top left
+
+	//face right A (side)
+	0.2f, -0.2f, 0.2f, 1.0f, // bottom right
+	0.2, -0.2f, -0.2f, 1.0f, //top left
+	0.2, 0.3f, -0.2f, 1.0f, //top left
+
+	//face  front A
+	-0.2, 0.2f, 0.2f, 1.0f, //front top left
+	0.2f, 0.2f, -0.2f, 1.0f, //front top right
+	0.2f, 0.2f, 0.2f, 1.0f,//front bottom right
 
 	//colour data
 	//blue top
@@ -66,6 +81,21 @@ const float tankbody[] = {
 	0.0f, 1.0f, 0.0f, 1.0f,
 	0.0f, 1.0f, 0.0f, 1.0f,
 	0.0f, 1.0f, 0.0f, 1.0f,
+
+	//yellow face
+	1.0f, 1.0f, 0.0f, 1.0f,
+	1.0f, 1.0f, 0.0f, 1.0f,
+	1.0f, 1.0f, 0.0f, 1.0f,
+
+	1.0f, 1.0f, 0.0f, 1.0f,
+	1.0f, 1.0f, 0.0f, 1.0f,
+	1.0f, 1.0f, 0.0f, 1.0f,
+
+	//purple face
+	1.0f, 0.0f, 1.0f, 1.0f,
+	1.0f, 0.0f, 1.0f, 1.0f,
+	1.0f, 0.0f, 1.0f, 1.0f,
+
 };
 
 const float cube[] = {
