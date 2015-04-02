@@ -2,6 +2,9 @@
 
 #include "vertexData.h"
 
+float rotateSpeed = -3.0f; //rate of change of the rotate - in radians per second
+glm::vec3 translateSpeed = glm::vec3(0.0f, 0.0f, 0.0f);
+
 // camera variables
 glm::vec3 eyePoint = glm::vec3(0, 0, 5);
 glm::vec3 lookAtPoint = glm::vec3(0, 0, 0);
@@ -166,7 +169,7 @@ void Renderer::initializeVertexBuffer()
 void Renderer::render()
 {
 	camInput();
-	camera();
+	updateSim();
 
 
 	glUseProgram(theProgram);
@@ -242,12 +245,23 @@ void Renderer::camInput()
 	}
 }
 
-void Renderer::camera()
+void Renderer::updateSim()
 {
 	const glm::vec3 unitX = glm::vec3(1, 0, 0);
 	const glm::vec3 unitY = glm::vec3(0, 1, 0);
 	const glm::vec3 unitZ = glm::vec3(0, 0, 1);
 	const glm::vec3 unit45 = glm::normalize(glm::vec3(0, 1, 1));
+
+	double simLength = 0.002;
+
+	float rotate = (float)simLength * rotateSpeed;
+
+	rotationMatrix = glm::rotate(rotationMatrix, rotate, unit45);
+
+	glm::vec3 translate = float(simLength) * translateSpeed; //scale the translationSpeed by time to get the translation amount
+	translationMatrix = glm::translate(translationMatrix, translate);
+
+	modelMatrix = translationMatrix * rotationMatrix;
 
 	//camera
 	eyePoint += eyePointMove;

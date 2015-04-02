@@ -18,7 +18,7 @@ public:
 	void runShaders();
 	void render();
 
-	void camera();
+	void updateSim();
 	void camInput();
 
 private:

@@ -182,7 +182,7 @@ void engine::gameLoop()
 	{
 		processInput();
 		_draw.camInput();
-		_draw.camera();
+		_draw.updateSim();
 		renderGame();
 	}
 }
