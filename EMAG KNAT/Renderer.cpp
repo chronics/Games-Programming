@@ -2,8 +2,14 @@
 
 #include "vertexData.h"
 
+//motion variables
 float rotateSpeed = -3.0f; //rate of change of the rotate - in radians per second
+
 glm::vec3 translateSpeed = glm::vec3(0.0f, 0.0f, 0.0f);
+
+glm::vec3 translateAcceleration = glm::vec3(0.5f, 0.5f, 0.5f);
+
+
 
 // camera variables
 glm::vec3 eyePoint = glm::vec3(0, 0, 5);
@@ -182,7 +188,7 @@ void Renderer::render()
 	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0); 
 	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData); 
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawArrays(GL_TRIANGLES, 0, 72);
 
 	glDisableVertexAttribArray(0); 
 	glUseProgram(0);
@@ -201,6 +207,13 @@ void Renderer::camInput()
 			if (!_camEvent.key.repeat)
 				switch (_camEvent.key.keysym.sym)
 				{
+					case SDLK_a:  translateSpeed.x += translateAcceleration.x; 
+					case SDLK_d:  translateSpeed.x -= translateAcceleration.x; break;
+
+					case SDLK_w:    translateSpeed.y += translateAcceleration.y; break;
+					case SDLK_s:  translateSpeed.y -= translateAcceleration.y; break;
+
+
 					case SDLK_KP_5: eyePointMove.z -= eyePointAcceleration.z; break;
 					case SDLK_KP_0: eyePointMove.z += eyePointAcceleration.z; break;
 
@@ -216,6 +229,13 @@ void Renderer::camInput()
 		case SDL_KEYUP:
 			switch (_camEvent.key.keysym.sym)
 			{
+				case SDLK_a:  translateSpeed.x -= translateAcceleration.x;; break;
+				case SDLK_d: translateSpeed.x += translateAcceleration.x;; break;
+
+				case SDLK_w:    translateSpeed.y -= translateAcceleration.y; break;
+				case SDLK_s:  translateSpeed.y += translateAcceleration.y; break;
+
+
 				case SDLK_KP_5: eyePointMove.z += eyePointAcceleration.z; break;
 				case SDLK_KP_0: eyePointMove.z -= eyePointAcceleration.z; break;
 
@@ -226,7 +246,7 @@ void Renderer::camInput()
 				case SDLK_KP_2: eyePointMove.y -= eyePointAcceleration.y; break;
 			}
 			break;
-			//mouse handling*/
+			//mouse handling
 
 		case SDL_MOUSEMOTION:
 		{
@@ -246,7 +266,7 @@ void Renderer::updateSim()
 	const glm::vec3 unitX = glm::vec3(1, 0, 0);
 	const glm::vec3 unitY = glm::vec3(0, 1, 0);
 	const glm::vec3 unitZ = glm::vec3(0, 0, 1);
-	const glm::vec3 unit45 = glm::normalize(glm::vec3(0, 1, 1));
+	const glm::vec3 unit45 = glm::normalize(glm::vec3(1, 1, 1));
 
 	double simLength = 0.002;
 

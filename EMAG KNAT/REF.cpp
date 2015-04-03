@@ -26,12 +26,8 @@ SDL_GLContext context; //the SDL_GLContext
 
 //string holding the **source** of our vertex shader, to save loading from a file
 const std::string strVertexShader(
-#ifdef OPENGL_VERSION_3_1
+
 	"#version 140\n"
-#endif
-#ifdef OPENGL_VERSION_3_3
-	"#version 140\n"
-#endif
 	"in vec4 position;\n"
 	"in vec4 color;\n"
 	"uniform mat4 modelMatrix;\n"
@@ -47,12 +43,8 @@ const std::string strVertexShader(
 
 //string holding the **source** of our fragment shader, to save loading from a file
 const std::string strFragmentShader(
-#ifdef OPENGL_VERSION_3_1
+
 	"#version 140\n"
-#endif
-#ifdef OPENGL_VERSION_3_3
-	"#version 140\n"
-#endif
 	"smooth in vec4 theColor;\n"
 	"out vec4 outputColor;\n"
 	"void main()\n"
@@ -65,62 +57,59 @@ const std::string strFragmentShader(
 //our variables
 bool done = false;
 
-const float vertexData[] = {
+const float tankbody[] = {
 
-	//positions
-	-0.25f, -0.25f, -0.25f, 1.0f,
-	-0.25f, -0.25f, 0.25f, 1.0f,
-	-0.25f, 0.25f, 0.25f, 1.0f,
+	//face top A
+	0.2f, 0.3f, -0.2f, 1.0f, //top right
+	0.2f, -0.2f, -0.2f, 1.0f, //bottom right
+	-0.2f, 0.3f, -0.2f, 1.0f, //top left
 
-	-0.25f, -0.25f, -0.25f, 1.0f,
-	-0.25f, 0.25f, 0.25f, 1.0f,
-	-0.25f, 0.25f, -0.25f, 1.0f,
-
-	0.25f, 0.25f, -0.25f, 1.0f,
-	-0.25f, -0.25f, -0.25f, 1.0f,
-	-0.25f, 0.25f, -0.25f, 1.0f,
-
-	0.25f, 0.25f, -0.25f, 1.0f,
-	0.25f, -0.25f, -0.25f, 1.0f,
-	-0.25f, -0.25f, -0.25f, 1.0f,
-
-	0.25f, -0.25f, 0.25f, 1.0f,
-	-0.25f, -0.25f, -0.25f, 1.0f,
-	0.25f, -0.25f, -0.25f, 1.0f,
-
-	0.25f, -0.25f, 0.25f, 1.0f,
-	-0.25f, -0.25f, 0.25f, 1.0f,
-	-0.25f, -0.25f, -0.25f, 1.0f,
-
-	-0.25f, 0.25f, 0.25f, 1.0f,
-	-0.25f, -0.25f, 0.25f, 1.0f,
-	0.25f, -0.25f, 0.25f, 1.0f,
-
-	0.25f, 0.25f, 0.25f, 1.0f,
-	-0.25f, 0.25f, 0.25f, 1.0f,
-	0.25f, -0.25f, 0.25f, 1.0f,
-
-	0.25f, 0.25f, 0.25f, 1.0f,
-	0.25f, -0.25f, -0.25f, 1.0f,
-	0.25f, 0.25f, -0.25f, 1.0f,
-
-	0.25f, -0.25f, -0.25f, 1.0f,
-	0.25f, 0.25f, 0.25f, 1.0f,
-	0.25f, -0.25f, 0.25f, 1.0f,
-
-	0.25f, 0.25f, 0.25f, 1.0f,
-	0.25f, 0.25f, -0.25f, 1.0f,
-	-0.25f, 0.25f, -0.25f, 1.0f,
-
-	0.25f, 0.25f, 0.25f, 1.0f,
-	-0.25f, 0.25f, -0.25f, 1.0f,
-	-0.25f, 0.25f, 0.25f, 1.0f,
+	//face top B
+	-0.2f, 0.3f, -0.2f, 1.0f, //top left
+	0.2f, -0.2f, -0.2f, 1.0f, //bottom right
+	-0.2f, -0.2f, -0.2f, 1.0f, // bottom left
 
 
+	//face bottom A
+	0.2f, 0.3f, 0.2f, 1.0f, //top right
+	-0.2f, 0.3f, 0.2f, 1.0f, //top left
+	0.2f, -0.2f, 0.2f, 1.0f, //bottom right
+
+	//face bottom B
+	-0.2f, 0.3f, 0.2f, 1.0f, //top left
+	-0.2f, -0.2f, 0.2f, 1.0f, // bottom left
+	0.2f, -0.2f, 0.2f, 1.0f, //bottom right
 
 
-	//colors
+	//face left A (side)
+	-0.2f, 0.3f, 0.2f, 1.0f, //top right
+	-0.2, 0.3f, -0.2f, 1.0f, //top left
+	-0.2f, -0.2f, 0.2f, 1.0f, // bottom right
 
+	//face left A (side)
+	-0.2f, -0.2f, 0.2f, 1.0f, // bottom right
+	-0.2, 0.3f, -0.2f, 1.0f, //top left
+	-0.2, -0.2f, -0.2f, 1.0f, //bottom left
+
+
+	//face right A (side)
+	0.2f, 0.3f, 0.2f, 1.0f, //top right
+	0.2f, -0.2f, 0.2f, 1.0f, // bottom right
+	0.2, 0.3f, -0.2f, 1.0f, //top left
+
+	//face right A (side)
+	0.2f, -0.2f, 0.2f, 1.0f, // bottom right
+	0.2, -0.2f, -0.2f, 1.0f, //top left
+	0.2, 0.3f, -0.2f, 1.0f, //top left
+
+
+	//face  front A
+	-0.2, 0.2f, 0.2f, 1.0f, //front top left
+	0.2f, 0.2f, -0.2f, 1.0f, //front top right
+	0.2f, 0.2f, 0.2f, 1.0f,//front bottom right
+
+	//colour data
+	//blue top
 	0.0f, 0.0f, 1.0f, 1.0f,
 	0.0f, 0.0f, 1.0f, 1.0f,
 	0.0f, 0.0f, 1.0f, 1.0f,
@@ -129,30 +118,7 @@ const float vertexData[] = {
 	0.0f, 0.0f, 1.0f, 1.0f,
 	0.0f, 0.0f, 1.0f, 1.0f,
 
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-
+	//red bottom
 	1.0f, 0.0f, 0.0f, 1.0f,
 	1.0f, 0.0f, 0.0f, 1.0f,
 	1.0f, 0.0f, 0.0f, 1.0f,
@@ -161,15 +127,31 @@ const float vertexData[] = {
 	1.0f, 0.0f, 0.0f, 1.0f,
 	1.0f, 0.0f, 0.0f, 1.0f,
 
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
+	//green side
+	0.0f, 1.0f, 0.0f, 1.0f,
+	0.0f, 1.0f, 0.0f, 1.0f,
+	0.0f, 1.0f, 0.0f, 1.0f,
 
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
+	0.0f, 1.0f, 0.0f, 1.0f,
+	0.0f, 1.0f, 0.0f, 1.0f,
+	0.0f, 1.0f, 0.0f, 1.0f,
+
+	//yellow face
+	1.0f, 1.0f, 0.0f, 1.0f,
+	1.0f, 1.0f, 0.0f, 1.0f,
+	1.0f, 1.0f, 0.0f, 1.0f,
+
+	1.0f, 1.0f, 0.0f, 1.0f,
+	1.0f, 1.0f, 0.0f, 1.0f,
+	1.0f, 1.0f, 0.0f, 1.0f,
+
+	//purple face
+	1.0f, 0.0f, 1.0f, 1.0f,
+	1.0f, 0.0f, 1.0f, 1.0f,
+	1.0f, 0.0f, 1.0f, 1.0f,
 
 };
+
 
 const float vertexData2D[] = {
 	//tree
@@ -323,20 +305,14 @@ void initialise()
 		cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
 		exit(1);
 	}
-	cout << "SDL initialised OK!\n";
+	
 }
 
 void createWindow()
 {
-	//get executable name, and use as window title
-	int beginIdxWindows = exeName.rfind("\\"); //find last occurrence of a backslash
-	int beginIdxLinux = exeName.rfind("/"); //find last occurrence of a forward slash
-	int beginIdx = max(beginIdxWindows, beginIdxLinux);
-	std::string exeNameEnd = exeName.substr(beginIdx + 1);
-	const char *exeNameCStr = exeNameEnd.c_str();
 
 	//create window
-	win = SDL_CreateWindow(exeNameCStr, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE); //same height and width makes the window square with resizable but needs to be tabbed out
+	win = SDL_CreateWindow("test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE); //same height and width makes the window square with resizable but needs to be tabbed out
 	//error handling
 	if (win == nullptr)
 	{
@@ -344,7 +320,7 @@ void createWindow()
 		SDL_Quit();
 		exit(1);
 	}
-	cout << "SDL CreatedWindow OK!\n";
+	
 }
 
 void setGLAttributes()
@@ -352,12 +328,15 @@ void setGLAttributes()
 	cout << "Built for OpenGL Version 3.3" << endl;
 	// set the opengl context version
 	int major = 3;
-	int minor = 1;
+	int minor = 3;
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); //core profile
-	cout << "Set OpenGL context to version " << major << "." << minor << " OK!\n";
+	
+	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl; // read the version of openGL and print to screen
+	std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl; // read the shader version and print to screen
+
 }
 
 void createContext()
@@ -369,7 +348,7 @@ void createContext()
 		SDL_Quit();
 		exit(1);
 	}
-	cout << "Created OpenGL context OK!\n";
+	
 }
 
 void initGlew()
@@ -383,7 +362,7 @@ void initGlew()
 		exit(1);
 	}
 	else {
-		cout << "GLEW Init OK!\n";
+		
 	}
 }
 
@@ -462,9 +441,7 @@ void initializeProgram()
 		SDL_Quit();
 		exit(1);
 	}
-	else {
-		cout << "GLSL program creation OK! GLUint is: " << theProgram << std::endl;
-	}
+	
 
 	positionLocation = glGetAttribLocation(theProgram, "position");
 	colorLocation = glGetAttribLocation(theProgram, "color");
@@ -492,7 +469,7 @@ void initializeVertexBuffer()
 	glGenBuffers(1, &vertexBufferObject);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(tankbody), tankbody, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	cout << "positionBufferObject created OK! GLUint is: " << vertexBufferObject << std::endl;
 }
@@ -535,42 +512,6 @@ void updateSimulation(double simLength) //update simulation with an amount of ti
 	translationMatrix = glm::translate(translationMatrix, translate);
 
 	modelMatrix = translationMatrix * rotationMatrix;
-
-	//cube 2
-	//calculate the amount of rotate for this timestep
-	float rotate2 = (float)simLength * rotateSpeed2; //simlength is a double for precision, but rotateSpeedVector in a vector of float, alternatively use glm::dvec3
-
-	//modify the rotationMatrix with the rotate, as a rotate, around the z-axis
-	rotationMatrix2 = glm::rotate(rotationMatrix2, rotate2, unit45);
-
-	glm::vec3 translate2 = float(simLength) * translateSpeed2; //scale the translationSpeed by time to get the translation amount
-	translationMatrix2 = glm::translate(translationMatrix2, translate2);
-
-	modelMatrix2 = translationMatrix2 * rotationMatrix2;
-
-	//cube 3
-	//calculate the amount of rotate for this timestep
-	float rotate4 = (float)simLength * rotateSpeed4; //simlength is a double for precision, but rotateSpeedVector in a vector of float, alternatively use glm::dvec3
-
-	//modify the rotationMatrix with the rotate, as a rotate, around the z-axis
-	rotationMatrix4 = glm::rotate(rotationMatrix4, rotate4, unit45);
-
-	glm::vec3 translate4 = float(simLength) * translateSpeed4; //scale the translationSpeed by time to get the translation amount
-	translationMatrix4 = glm::translate(translationMatrix4, translate4);
-
-	modelMatrix4 = translationMatrix4 * rotationMatrix4;
-
-	//cube 2
-	//calculate the amount of rotate for this timestep
-	float rotate5 = (float)simLength * rotateSpeed5; //simlength is a double for precision, but rotateSpeedVector in a vector of float, alternatively use glm::dvec3
-
-	//modify the rotationMatrix with the rotate, as a rotate, around the z-axis
-	rotationMatrix5 = glm::rotate(rotationMatrix5, rotate5, unit45);
-
-	glm::vec3 translate5 = float(simLength) * translateSpeed5; //scale the translationSpeed by time to get the translation amount
-	translationMatrix5 = glm::translate(translationMatrix5, translate5);
-
-	modelMatrix5 = translationMatrix5 * rotationMatrix5;
 
 	//camera
 
@@ -693,61 +634,20 @@ void render()
 {
 	glUseProgram(theProgram); //installs the program object specified by program as part of current rendering state
 
-
-
-	//load data to GLSL that **may** have changed
-	//cube1 modelMatrix
-	//glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix)); //uploaed the modelMatrix to the appropriate uniform location
-	// upload only one matrix, and don't transpose it
-
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix)); //uploaed the modelMatrix to the appropriate uniform location
-	// upload only one matrix, and don't transpose it
-
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix)); //uploaed the modelMatrix to the appropriate uniform location
-	// upload only one matrix, and don't transpose it
 
 	glEnableVertexAttribArray(positionLocation);
 	glEnableVertexAttribArray(colorLocation);
 
-	//floor
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject2D);
-	size_t colorData2 = sizeof(vertexData2D) / 2;
-	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0); //define **how** values are reader from positionBufferObject in Attrib 0
-	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData2); //define **how** values are reader from positionBufferObject in Attrib 1
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix3)); //uploaed the modelMatrix to the appropriate uniform location
-	glDrawArrays(GL_TRIANGLES, 0, 15); //Draw something, using Triangles, and 9 vertices 
-
+	
 	//cube 1
-	size_t colorData = sizeof(vertexData) / 2;
+	size_t colorData = sizeof(tankbody) / 2;
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject); //bind positionBufferObject
 	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0); //define **how** values are reader from positionBufferObject in Attrib 0
 	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData); //define **how** values are reader from positionBufferObject in Attrib 1
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 	glDrawArrays(GL_TRIANGLES, 0, 36); //Draw something, using Triangles, and 36 vertices 
-
-	//cube2 modelMatrix
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix2)); //uploaed the modelMatrix to the appropriate uniform location
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	//cube 3
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::mat4(modelMatrix4), offset)));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	//cube 4
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::mat4(modelMatrix4), offset2)));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	//cube 5
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::mat4(modelMatrix4), offset3)));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	//cube 6
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::mat4(modelMatrix4), offset4)));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	//cube 7
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::mat4(modelMatrix5), offset5)));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
 	glDisableVertexAttribArray(0); //cleanup
@@ -761,11 +661,8 @@ void cleanUp()
 	cout << "Cleaning up OK!\n";
 }
 
-int main(int argc, char* args[])
+int main(int argc, char** argv)
 {
-	exeName = args[0];
-	//setup
-	//- do just once
 	initialise();
 	createWindow();
 	setGLAttributes();

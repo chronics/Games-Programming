@@ -13,6 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{828664CF-7BEA-41CF-9993-037AD2218B39}</ProjectGuid>
     <RootNamespace>EMAGKNAT</RootNamespace>
+    <ProjectName>GP 3D Engine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

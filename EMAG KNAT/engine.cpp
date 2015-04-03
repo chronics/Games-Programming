@@ -151,7 +151,7 @@ void engine::processInput()
 				
 				}
 				break;
-			//mouse handling*/
+			//mouse handling
 
 		case SDL_MOUSEMOTION:
 			{
@@ -166,11 +166,17 @@ void engine::processInput()
 	}
 }
 
+
+
 void engine::renderGame()
 {
+	_draw.camInput();
+	_draw.updateSim();
+
+
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		
 	_draw.render(); // call the render function from the renderer class
 	
 	SDL_GL_SwapWindow(_window);
@@ -181,8 +187,7 @@ void engine::gameLoop()
 	while (_GameState != GameState::EXIT)
 	{
 		processInput();
-		_draw.camInput();
-		_draw.updateSim();
+		
 		renderGame();
 	}
 }

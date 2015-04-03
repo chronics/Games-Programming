@@ -26,6 +26,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D3661E02-3367-44F0-AEFB-9D8457B2A136}</ProjectGuid>
     <RootNamespace>GamesProgrammingV2</RootNamespace>
+    <ProjectName>GP 2D Engine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
