@@ -18,7 +18,7 @@
 #include "Renderer.h"
 #include "Error.h"
 
-//enum class GameState { PLAY, EXIT };
+enum class GameState { PLAY, EXIT };
 
 class engine
 {
@@ -30,7 +30,7 @@ public:
 
 	SDL_Window* _window;
 	SDL_GLContext context;
-	
+	GameState _GameState;
 
 	void run();
 	void renderGame();

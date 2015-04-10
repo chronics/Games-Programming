@@ -9,7 +9,7 @@ engine::engine()
 	_window = nullptr;
 	_screenWidth = 600;
 	_screenHight = 600;
-	
+	_GameState = GameState::PLAY;
 }
 
 engine::~engine()
@@ -27,8 +27,8 @@ void engine::run()
 
 	_draw.runShaders();// run the function runshaders from the render class
 	//runShaders();
-
-	_draw.gameLoop();
+	
+	gameLoop();
 }
 
 void engine::initSystem()
@@ -129,4 +129,12 @@ void engine::renderGame()
 	SDL_GL_SwapWindow(_window);
 }
 
+void engine::gameLoop()
+{
+	while (_GameState != GameState::EXIT)
+	{
 
+		renderGame();
+
+	}
+}

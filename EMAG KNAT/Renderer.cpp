@@ -2,14 +2,14 @@
 #include "engine.h"
 #include "vertexData.h"
 
-engine _loop;
+
 
 //motion variables
 float rotateSpeed = -3.0f; //rate of change of the rotate - in radians per second
 
 glm::vec3 translateSpeed = glm::vec3(0.0f, 0.0f, 0.0f);
 
-glm::vec3 translateAcceleration = glm::vec3(1.0f, 1.0f, 1.0f);
+glm::vec3 translateAcceleration = glm::vec3(2.0f, 2.0f, 2.0f);
 
 // camera variables
 glm::vec3 eyePoint = glm::vec3(0, 0, 5);
@@ -29,9 +29,12 @@ glm::vec3 rightVar(
 	sin(horizontalAngle - 3.14f / 2.0f), 0,
 	cos(horizontalAngle - 3.14f / 2.0f));
 
+//offsets
+glm::vec3 offset = glm::vec3(-4.0f, 4.0f, 0.0f);
+
 Renderer::Renderer()
 {
-	_GameState = GameState::PLAY; // set game state to play, while in play mode the game will run
+	//_GameState = GameState::PLAY; // set game state to play, while in play mode the game will run
 }
 
 Renderer::~Renderer()
@@ -199,7 +202,7 @@ void Renderer::render()
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject); 
 	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0); 
 	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData); 
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::mat4(modelMatrix), offset)));
 	glDrawArrays(GL_TRIANGLES, 0, 72);
 
 	glDisableVertexAttribArray(0); 
@@ -214,7 +217,7 @@ void Renderer::renderInput()
 		switch (_camEvent.type)
 		{
 		
-		case SDL_QUIT: _GameState = GameState::EXIT; break;// press the close button to switch game state
+		case SDL_QUIT: /*_GameState = GameState::EXIT*/ SDL_Quit(); break;// press the close button to switch game state
 			
 			//keydown handling - we should to the opposite on key-up for direction controls (generally)
 		case SDL_KEYDOWN:
@@ -222,9 +225,9 @@ void Renderer::renderInput()
 			if (!_camEvent.key.repeat)
 				switch (_camEvent.key.keysym.sym)
 				{
-					case SDLK_ESCAPE: _GameState = GameState::EXIT; break;
+					//case SDLK_ESCAPE: _GameState = GameState::EXIT; break;
 
-					case SDLK_d:  translateSpeed.x += translateAcceleration.x; std::cout << "a"; break;
+					case SDLK_d:  translateSpeed.x += translateAcceleration.x; break;
 					case SDLK_a:  translateSpeed.x -= translateAcceleration.x; break;
 
 					case SDLK_w:    translateSpeed.y += translateAcceleration.y; break;
@@ -246,8 +249,8 @@ void Renderer::renderInput()
 		case SDL_KEYUP:
 			switch (_camEvent.key.keysym.sym)
 			{
-				case SDLK_d:  translateSpeed.x -= translateAcceleration.x;; break;
-				case SDLK_a: translateSpeed.x += translateAcceleration.x;; break;
+				case SDLK_d:  translateSpeed.x -= translateAcceleration.x; break;
+				case SDLK_a: translateSpeed.x += translateAcceleration.x; break;
 
 				case SDLK_w:    translateSpeed.y -= translateAcceleration.y; break;
 				case SDLK_s:  translateSpeed.y += translateAcceleration.y; break;
@@ -280,6 +283,8 @@ void Renderer::renderInput()
 
 void Renderer::updateSim()
 {
+	
+
 	const glm::vec3 unitX = glm::vec3(1, 0, 0);
 	const glm::vec3 unitY = glm::vec3(0, 1, 0);
 	const glm::vec3 unitZ = glm::vec3(0, 0, 1);
@@ -289,7 +294,7 @@ void Renderer::updateSim()
 
 	float rotate = (float)simLength * rotateSpeed;
 
-	rotationMatrix = glm::rotate(rotationMatrix, rotate, unit45);
+	//rotationMatrix = glm::rotate(rotationMatrix, rotate, unit45);
 
 	glm::vec3 translate = float(simLength) * translateSpeed; //scale the translationSpeed by time to get the translation amount
 	translationMatrix = glm::translate(translationMatrix, translate);
@@ -324,12 +329,3 @@ void Renderer::updateSim()
 
 }
 
-void Renderer::gameLoop()
-{
-	while (_GameState != GameState::EXIT)
-	{
-	
-		_loop.renderGame();
-
-	}
-}

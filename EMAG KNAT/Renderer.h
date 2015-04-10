@@ -3,7 +3,7 @@
 #include "engine.h"
 #include "Error.h"
 
-enum class GameState { PLAY, EXIT };
+//enum class GameState { PLAY, EXIT };
 
 class Renderer
 {
@@ -11,7 +11,7 @@ public:
 	Renderer();
 	~Renderer();
 
-	GameState _GameState;
+	
 
 	glm::mat4 modelMatrix, viewMatrix, projectionMatrix, rotationMatrix, translationMatrix, modelMatrix1;
 	GLint positionLocation, colorLocation, modelMatrixLocation, viewMatrixLocation, projectionMatrixLocation;
@@ -24,7 +24,7 @@ public:
 
 	void updateSim();
 	void renderInput();
-	void gameLoop();
+	//void gameLoop();
 
 
 private:
