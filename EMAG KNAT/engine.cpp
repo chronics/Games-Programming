@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "vertexData.h"
 
 
 Renderer _draw;
@@ -8,7 +9,7 @@ engine::engine()
 	_window = nullptr;
 	_screenWidth = 600;
 	_screenHight = 600;
-	_GameState = GameState::PLAY; // set game state to play, while in play mode the game will run
+	
 }
 
 engine::~engine()
@@ -25,8 +26,9 @@ void engine::run()
 	initGlew();
 
 	_draw.runShaders();// run the function runshaders from the render class
+	//runShaders();
 
-	gameLoop();
+	_draw.gameLoop();
 }
 
 void engine::initSystem()
@@ -90,9 +92,11 @@ void engine::initGlew()
 	}
 
 	// Enable back face culling with counter-clockwise winding for front faces
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+
+
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glFrontFace(GL_CCW);
 
 	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);
@@ -118,76 +122,11 @@ void engine::initGlew()
 
 }
 
-void engine::processInput()
-{
-	SDL_Event _event;
-
-	while (SDL_PollEvent(&_event)) { 
-		switch (_event.type)
-		{
-
-		case SDL_QUIT:
-			_GameState = GameState::EXIT; // press the close button to switch game state
-			break;
-
-			//keydown handling - we should to the opposite on key-up for direction controls (generally)
-		case SDL_KEYDOWN:
-
-			if (!_event.key.repeat)
-				switch (_event.key.keysym.sym)
-			{
-				//hit escape to change gamestate
-				case SDLK_ESCAPE:
-					_GameState = GameState::EXIT;
-
-				
-			}
-			break;
-
-			//keyup handling
-			case SDL_KEYUP:
-				switch (_event.key.keysym.sym)
-				{
-				
-				}
-				break;
-			//mouse handling
-
-		case SDL_MOUSEMOTION:
-			{
-			
-			};
-			break;
-
-		default: //one dose not simply forget a default case
-			break;
-			
-		}
-	}
-}
-
-
-
 void engine::renderGame()
 {
-	_draw.camInput();
-	_draw.updateSim();
+	_draw.runRender();
 
-
-	glClearDepth(1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-	_draw.render(); // call the render function from the renderer class
-	
 	SDL_GL_SwapWindow(_window);
 }
 
-void engine::gameLoop()
-{
-	while (_GameState != GameState::EXIT)
-	{
-		processInput();
-		
-		renderGame();
-	}
-}
+

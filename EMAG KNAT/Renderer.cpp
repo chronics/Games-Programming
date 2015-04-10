@@ -1,15 +1,15 @@
 #include "Renderer.h"
-
+#include "engine.h"
 #include "vertexData.h"
+
+engine _loop;
 
 //motion variables
 float rotateSpeed = -3.0f; //rate of change of the rotate - in radians per second
 
 glm::vec3 translateSpeed = glm::vec3(0.0f, 0.0f, 0.0f);
 
-glm::vec3 translateAcceleration = glm::vec3(0.5f, 0.5f, 0.5f);
-
-
+glm::vec3 translateAcceleration = glm::vec3(1.0f, 1.0f, 1.0f);
 
 // camera variables
 glm::vec3 eyePoint = glm::vec3(0, 0, 5);
@@ -31,10 +31,22 @@ glm::vec3 rightVar(
 
 Renderer::Renderer()
 {
+	_GameState = GameState::PLAY; // set game state to play, while in play mode the game will run
 }
 
 Renderer::~Renderer()
 {
+}
+
+void Renderer::runRender()
+{
+	renderInput();
+	updateSim();
+
+	glClearDepth(1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	render();
 }
 
 std::string LoadShaderFromFile(const std::string& filename)
@@ -159,12 +171,12 @@ void Renderer::initializeProgram()
 
 void Renderer::initializeVertexBuffer()
 {
-	/*
+	
 	glGenBuffers(1, &vertexBufferObject2D);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject2D);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(triangles), triangles, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	*/
+	
 
 	glGenBuffers(1, &vertexBufferObject);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
@@ -194,21 +206,26 @@ void Renderer::render()
 	glUseProgram(0);
 }
 
-void Renderer::camInput()
+void Renderer::renderInput()
 {
 	SDL_Event _camEvent;
 
 	while (SDL_PollEvent(&_camEvent)) {
 		switch (_camEvent.type)
 		{
+		
+		case SDL_QUIT: _GameState = GameState::EXIT; break;// press the close button to switch game state
+			
 			//keydown handling - we should to the opposite on key-up for direction controls (generally)
 		case SDL_KEYDOWN:
 
 			if (!_camEvent.key.repeat)
 				switch (_camEvent.key.keysym.sym)
 				{
-					case SDLK_a:  translateSpeed.x += translateAcceleration.x; 
-					case SDLK_d:  translateSpeed.x -= translateAcceleration.x; break;
+					case SDLK_ESCAPE: _GameState = GameState::EXIT; break;
+
+					case SDLK_d:  translateSpeed.x += translateAcceleration.x; std::cout << "a"; break;
+					case SDLK_a:  translateSpeed.x -= translateAcceleration.x; break;
 
 					case SDLK_w:    translateSpeed.y += translateAcceleration.y; break;
 					case SDLK_s:  translateSpeed.y -= translateAcceleration.y; break;
@@ -229,8 +246,8 @@ void Renderer::camInput()
 		case SDL_KEYUP:
 			switch (_camEvent.key.keysym.sym)
 			{
-				case SDLK_a:  translateSpeed.x -= translateAcceleration.x;; break;
-				case SDLK_d: translateSpeed.x += translateAcceleration.x;; break;
+				case SDLK_d:  translateSpeed.x -= translateAcceleration.x;; break;
+				case SDLK_a: translateSpeed.x += translateAcceleration.x;; break;
 
 				case SDLK_w:    translateSpeed.y -= translateAcceleration.y; break;
 				case SDLK_s:  translateSpeed.y += translateAcceleration.y; break;
@@ -307,3 +324,12 @@ void Renderer::updateSim()
 
 }
 
+void Renderer::gameLoop()
+{
+	while (_GameState != GameState::EXIT)
+	{
+	
+		_loop.renderGame();
+
+	}
+}

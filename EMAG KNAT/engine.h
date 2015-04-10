@@ -18,7 +18,7 @@
 #include "Renderer.h"
 #include "Error.h"
 
-enum class GameState { PLAY, EXIT };
+//enum class GameState { PLAY, EXIT };
 
 class engine
 {
@@ -30,9 +30,10 @@ public:
 
 	SDL_Window* _window;
 	SDL_GLContext context;
-	GameState _GameState;
+	
 
 	void run();
+	void renderGame();
 
 private:
 
@@ -47,8 +48,17 @@ private:
 
 	void processInput();
 	
+	void runShaders();
+	void render();
+
+	void updateSim();
+	void camInput();
+
+	void initializeProgram();
+	void initializeVertexBuffer();
+
 	void camera();
 
-	void renderGame();	
+	
 };
 
