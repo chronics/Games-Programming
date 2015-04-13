@@ -2,14 +2,16 @@
 #include "engine.h"
 #include "vertexData.h"
 
-
+bool start = true;
 
 //motion variables
 float rotateSpeed = -3.0f; //rate of change of the rotate - in radians per second
 
 glm::vec3 translateSpeed = glm::vec3(0.0f, 0.0f, 0.0f);
-
 glm::vec3 translateAcceleration = glm::vec3(2.0f, 2.0f, 2.0f);
+
+glm::vec3 translateSpeed1 = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 translateAcceleration1 = glm::vec3(2.0f, 2.0f, 2.0f);
 
 // camera variables
 glm::vec3 eyePoint = glm::vec3(0, 0, 5);
@@ -31,6 +33,7 @@ glm::vec3 rightVar(
 
 //offsets
 glm::vec3 offset = glm::vec3(-4.0f, 4.0f, 0.0f);
+glm::vec3 offset1 = glm::vec3(4.0f, -4.0f, 0.0f);
 
 Renderer::Renderer()
 {
@@ -205,6 +208,9 @@ void Renderer::render()
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::mat4(modelMatrix), offset)));
 	glDrawArrays(GL_TRIANGLES, 0, 72);
 
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::mat4(modelMatrix1), offset1)));
+	glDrawArrays(GL_TRIANGLES, 0, 72);
+
 	glDisableVertexAttribArray(0); 
 	glUseProgram(0);
 }
@@ -227,13 +233,21 @@ void Renderer::renderInput()
 				{
 					//case SDLK_ESCAPE: _GameState = GameState::EXIT; break;
 
+					//top tank
 					case SDLK_d:  translateSpeed.x += translateAcceleration.x; break;
 					case SDLK_a:  translateSpeed.x -= translateAcceleration.x; break;
 
 					case SDLK_w:    translateSpeed.y += translateAcceleration.y; break;
 					case SDLK_s:  translateSpeed.y -= translateAcceleration.y; break;
 
+					//bottom tank
+					case SDLK_LEFT: translateSpeed1.x -= translateAcceleration1.x; break;
+					case SDLK_RIGHT: translateSpeed1.x += translateAcceleration1.x; break;
 
+					case SDLK_UP: translateSpeed1.y += translateAcceleration1.y; break;
+					case SDLK_DOWN: translateSpeed1.y -= translateAcceleration1.y; break;
+
+					//camera
 					case SDLK_KP_5: eyePointMove.z -= eyePointAcceleration.z; break;
 					case SDLK_KP_0: eyePointMove.z += eyePointAcceleration.z; break;
 
@@ -249,13 +263,21 @@ void Renderer::renderInput()
 		case SDL_KEYUP:
 			switch (_camEvent.key.keysym.sym)
 			{
+				//top tank 
 				case SDLK_d:  translateSpeed.x -= translateAcceleration.x; break;
 				case SDLK_a: translateSpeed.x += translateAcceleration.x; break;
 
 				case SDLK_w:    translateSpeed.y -= translateAcceleration.y; break;
 				case SDLK_s:  translateSpeed.y += translateAcceleration.y; break;
 
+				//bottom tank 
+				case SDLK_LEFT: translateSpeed1.x += translateAcceleration1.x; break;
+				case SDLK_RIGHT: translateSpeed1.x -= translateAcceleration1.x; break;
 
+				case SDLK_UP: translateSpeed1.y -= translateAcceleration1.y; break;
+				case SDLK_DOWN: translateSpeed1.y += translateAcceleration1.y; break;
+
+				//camera
 				case SDLK_KP_5: eyePointMove.z += eyePointAcceleration.z; break;
 				case SDLK_KP_0: eyePointMove.z -= eyePointAcceleration.z; break;
 
@@ -268,10 +290,18 @@ void Renderer::renderInput()
 			break;
 			//mouse handling
 
-		case SDL_MOUSEMOTION:
-		{
+			SDL_PumpEvents();
+			if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
 
-		};
+				mousePosX = _camEvent.motion.x;
+				mousePosY = _camEvent.motion.y;
+
+				horizontalAngle += (mouseSpeed * float(300 - mousePosX));
+				verticalAngle += (mouseSpeed * float(300 - mousePosY));
+				break;
+			}
+
+	
 			break;
 
 		default: //one dose not simply forget a default case
@@ -300,6 +330,19 @@ void Renderer::updateSim()
 	translationMatrix = glm::translate(translationMatrix, translate);
 
 	modelMatrix = translationMatrix * rotationMatrix;
+
+
+
+	float rotate1 = (float)simLength * rotateSpeed;
+
+	//rotationMatrix = glm::rotate(rotationMatrix, rotate1, unit45);
+	
+	glm::vec3 translate1 = float(simLength) * translateSpeed1; //scale the translationSpeed by time to get the translation amount
+	translationMatrix1 = glm::translate(translationMatrix1, translate1);
+
+	modelMatrix1 = translationMatrix1 * rotationMatrix1;
+
+
 
 	//camera
 	eyePoint += eyePointMove;
