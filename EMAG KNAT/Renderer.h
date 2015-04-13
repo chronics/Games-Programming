@@ -13,7 +13,7 @@ public:
 
 	
 
-	glm::mat4 modelMatrix, viewMatrix, projectionMatrix, rotationMatrix, translationMatrix, modelMatrix1;
+	glm::mat4 modelMatrix, viewMatrix, projectionMatrix, rotationMatrix, translationMatrix, modelMatrix1, rotationMatrix1, translationMatrix1;
 	GLint positionLocation, colorLocation, modelMatrixLocation, viewMatrixLocation, projectionMatrixLocation;
 	GLuint theProgram, vertexBufferObject, vertexBufferObject2D, vao;
 	
