@@ -106,7 +106,7 @@ void engine::initGlew()
 	SDL_GL_SetSwapInterval(1);
 
 	// Set clear color
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
 	glClearDepth(1.0f);
 
 	//EasterEgg Command
@@ -136,5 +136,32 @@ void engine::gameLoop()
 
 		renderGame();
 
+	}
+}
+
+void engine::gameInput()
+{
+	SDL_Event _event;
+
+	while (SDL_PollEvent(&_event)) {
+		switch (_event.type)
+		{
+
+			case SDL_QUIT: _GameState = GameState::EXIT; break;// press the close button to switch game state
+
+			//keydown handling - we should to the opposite on key-up for direction controls (generally)
+		case SDL_KEYDOWN:
+
+			if (!_event.key.repeat)
+				switch (_event.key.keysym.sym)
+			{
+				case SDLK_ESCAPE: _GameState = GameState::EXIT; break;
+			}
+			break;
+
+		default: //one dose not simply forget a default case
+			break;
+
+		}
 	}
 }

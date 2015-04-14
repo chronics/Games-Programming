@@ -34,7 +34,7 @@ public:
 
 	void run();
 	void renderGame();
-
+	void gameInput();
 private:
 
 	void initSystem();

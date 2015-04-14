@@ -4,14 +4,21 @@
 
 bool start = true;
 
+double simLength = 0.002;
+
 //motion variables
-float rotateSpeed = -3.0f; //rate of change of the rotate - in radians per second
+float rotateSpeed = 0.0f; //rate of change of the rotate - in radians per second
+float rotationAcceleration = 3.0f;
+
+
+float rotateSpeed1 = 0.0f; //rate of change of the rotate - in radians per second
+float rotationAcceleration1 = 3.0f;
 
 glm::vec3 translateSpeed = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 translateAcceleration = glm::vec3(2.0f, 2.0f, 2.0f);
+glm::vec3 translateAcceleration = glm::vec3(4.0f, 4.0f, 4.0f);
 
 glm::vec3 translateSpeed1 = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 translateAcceleration1 = glm::vec3(2.0f, 2.0f, 2.0f);
+glm::vec3 translateAcceleration1 = glm::vec3(4.0f, 4.0f, 4.0f);
 
 // camera variables
 glm::vec3 eyePoint = glm::vec3(0, 0, 5);
@@ -31,13 +38,10 @@ glm::vec3 rightVar(
 	sin(horizontalAngle - 3.14f / 2.0f), 0,
 	cos(horizontalAngle - 3.14f / 2.0f));
 
-//offsets
-glm::vec3 offset = glm::vec3(-4.0f, 4.0f, 0.0f);
-glm::vec3 offset1 = glm::vec3(4.0f, -4.0f, 0.0f);
 
 Renderer::Renderer()
 {
-	//_GameState = GameState::PLAY; // set game state to play, while in play mode the game will run
+	
 }
 
 Renderer::~Renderer()
@@ -186,8 +190,9 @@ void Renderer::initializeVertexBuffer()
 
 	glGenBuffers(1, &vertexBufferObject);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(tankbody), tankbody, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(offsetTank_4X), offsetTank_4X, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 void Renderer::render()
@@ -201,15 +206,17 @@ void Renderer::render()
 	glEnableVertexAttribArray(colorLocation);
 
 	//cube
-	size_t colorData = sizeof(tankbody) / 2;
+
+	size_t colorData = sizeof(offsetTank_4X) / 2;
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject); 
 	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0); 
 	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData); 
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::mat4(modelMatrix), offset)));
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(modelMatrix)));
 	glDrawArrays(GL_TRIANGLES, 0, 72);
 
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::translate(glm::mat4(modelMatrix1), offset1)));
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(modelMatrix1)));
 	glDrawArrays(GL_TRIANGLES, 0, 72);
+
 
 	glDisableVertexAttribArray(0); 
 	glUseProgram(0);
@@ -217,13 +224,16 @@ void Renderer::render()
 
 void Renderer::renderInput()
 {
+
+	//_gameControl.gameInput();
+
 	SDL_Event _camEvent;
 
 	while (SDL_PollEvent(&_camEvent)) {
 		switch (_camEvent.type)
 		{
 		
-		case SDL_QUIT: /*_GameState = GameState::EXIT*/ SDL_Quit(); break;// press the close button to switch game state
+		//case SDL_QUIT: _GameState = GameState::EXIT; break;// press the close button to switch game state
 			
 			//keydown handling - we should to the opposite on key-up for direction controls (generally)
 		case SDL_KEYDOWN:
@@ -240,6 +250,9 @@ void Renderer::renderInput()
 					case SDLK_w:    translateSpeed.y += translateAcceleration.y; break;
 					case SDLK_s:  translateSpeed.y -= translateAcceleration.y; break;
 
+					case SDLK_q: rotateSpeed += rotationAcceleration; break;
+					case SDLK_e: rotateSpeed -= rotationAcceleration; break;
+
 					//bottom tank
 					case SDLK_LEFT: translateSpeed1.x -= translateAcceleration1.x; break;
 					case SDLK_RIGHT: translateSpeed1.x += translateAcceleration1.x; break;
@@ -251,11 +264,13 @@ void Renderer::renderInput()
 					case SDLK_KP_5: eyePointMove.z -= eyePointAcceleration.z; break;
 					case SDLK_KP_0: eyePointMove.z += eyePointAcceleration.z; break;
 
-					case SDLK_KP_6: eyePointMove.x -= eyePointAcceleration.x; break;
-					case SDLK_KP_4: eyePointMove.x += eyePointAcceleration.x; break;
+					case SDLK_KP_4: eyePointMove.x -= eyePointAcceleration.x; break;
+					case SDLK_KP_6: eyePointMove.x += eyePointAcceleration.x; break;
 
 					case SDLK_KP_8: eyePointMove.y -= eyePointAcceleration.y; break;
 					case SDLK_KP_2: eyePointMove.y += eyePointAcceleration.y; break;
+
+					case SDLK_m: simLength = 0.0002; break;
 				}
 			break;
 
@@ -270,6 +285,9 @@ void Renderer::renderInput()
 				case SDLK_w:    translateSpeed.y -= translateAcceleration.y; break;
 				case SDLK_s:  translateSpeed.y += translateAcceleration.y; break;
 
+				case SDLK_q: rotateSpeed -= rotationAcceleration; break;
+				case SDLK_e: rotateSpeed += rotationAcceleration; break;
+
 				//bottom tank 
 				case SDLK_LEFT: translateSpeed1.x += translateAcceleration1.x; break;
 				case SDLK_RIGHT: translateSpeed1.x -= translateAcceleration1.x; break;
@@ -281,11 +299,13 @@ void Renderer::renderInput()
 				case SDLK_KP_5: eyePointMove.z += eyePointAcceleration.z; break;
 				case SDLK_KP_0: eyePointMove.z -= eyePointAcceleration.z; break;
 
-				case SDLK_KP_6: eyePointMove.x += eyePointAcceleration.x; break;
-				case SDLK_KP_4: eyePointMove.x -= eyePointAcceleration.x; break;
+				case SDLK_KP_4: eyePointMove.x += eyePointAcceleration.x; break;
+				case SDLK_KP_6: eyePointMove.x -= eyePointAcceleration.x; break;
 
 				case SDLK_KP_8: eyePointMove.y += eyePointAcceleration.y; break;
 				case SDLK_KP_2: eyePointMove.y -= eyePointAcceleration.y; break;
+
+				case SDLK_m: simLength = 0.002; break;
 			}
 			break;
 			//mouse handling
@@ -318,13 +338,11 @@ void Renderer::updateSim()
 	const glm::vec3 unitX = glm::vec3(1, 0, 0);
 	const glm::vec3 unitY = glm::vec3(0, 1, 0);
 	const glm::vec3 unitZ = glm::vec3(0, 0, 1);
-	const glm::vec3 unit45 = glm::normalize(glm::vec3(1, 1, 1));
+	const glm::vec3 unit45 = glm::normalize(glm::vec3(0, 0, 1));
 
-	double simLength = 0.002;
 
 	float rotate = (float)simLength * rotateSpeed;
-
-	//rotationMatrix = glm::rotate(rotationMatrix, rotate, unit45);
+	rotationMatrix = glm::rotate(rotationMatrix, rotate, unit45);
 
 	glm::vec3 translate = float(simLength) * translateSpeed; //scale the translationSpeed by time to get the translation amount
 	translationMatrix = glm::translate(translationMatrix, translate);
@@ -332,16 +350,13 @@ void Renderer::updateSim()
 	modelMatrix = translationMatrix * rotationMatrix;
 
 
-
-	float rotate1 = (float)simLength * rotateSpeed;
-
-	//rotationMatrix = glm::rotate(rotationMatrix, rotate1, unit45);
+	float rotate1 = (float)simLength * rotateSpeed1;
+	rotationMatrix1 = glm::rotate(rotationMatrix1, rotate1, unit45);
 	
 	glm::vec3 translate1 = float(simLength) * translateSpeed1; //scale the translationSpeed by time to get the translation amount
 	translationMatrix1 = glm::translate(translationMatrix1, translate1);
 
 	modelMatrix1 = translationMatrix1 * rotationMatrix1;
-
 
 
 	//camera
