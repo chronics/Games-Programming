@@ -14,11 +14,13 @@
 #include <glm/glm.hpp> 
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtc/type_ptr.hpp> 
+#include <glm/ext.hpp>
 
 #include "Renderer.h"
 #include "Error.h"
+#include "GameState.h"
 
-enum class GameState { PLAY, EXIT };
+
 
 class engine
 {
@@ -34,7 +36,7 @@ public:
 
 	void run();
 	void renderGame();
-	void gameInput();
+	
 private:
 
 	void initSystem();

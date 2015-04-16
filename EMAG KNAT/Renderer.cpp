@@ -39,6 +39,10 @@ glm::vec3 rightVar(
 	cos(horizontalAngle - 3.14f / 2.0f));
 
 
+glm::vec3 modelPosition = glm::vec3(-4.0f, 4.0f, 0.0f);
+glm::vec3 modelScale = glm::vec3(1.0f, 1.0f, 1.0f);
+glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
 Renderer::Renderer()
 {
 	
@@ -182,15 +186,15 @@ void Renderer::initializeProgram()
 void Renderer::initializeVertexBuffer()
 {
 	
-	glGenBuffers(1, &vertexBufferObject2D);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject2D);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(triangles), triangles, GL_STATIC_DRAW);
+	glGenBuffers(1, &vertexBufferObject);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeGreen), cubeGreen, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 
-	glGenBuffers(1, &vertexBufferObject);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(offsetTank_4X), offsetTank_4X, GL_STATIC_DRAW);
+	glGenBuffers(1, &vertexBufferObject1);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject1);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeRed), cubeRed, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 }
@@ -206,16 +210,22 @@ void Renderer::render()
 	glEnableVertexAttribArray(colorLocation);
 
 	//cube
-
-	size_t colorData = sizeof(offsetTank_4X) / 2;
+	size_t colorData = sizeof(cubeGreen) / 2;
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject); 
 	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0); 
 	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData); 
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(modelMatrix)));
 	glDrawArrays(GL_TRIANGLES, 0, 72);
 
+	//cube
+	
+	size_t colorData1 = sizeof(cubeRed) / 2;
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject1);
+	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData1);
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(modelMatrix1)));
 	glDrawArrays(GL_TRIANGLES, 0, 72);
+
 
 
 	glDisableVertexAttribArray(0); 
@@ -225,7 +235,6 @@ void Renderer::render()
 void Renderer::renderInput()
 {
 
-	//_gameControl.gameInput();
 
 	SDL_Event _camEvent;
 
@@ -233,7 +242,7 @@ void Renderer::renderInput()
 		switch (_camEvent.type)
 		{
 		
-		//case SDL_QUIT: _GameState = GameState::EXIT; break;// press the close button to switch game state
+		case SDL_QUIT: _GameState = GameState::EXIT; break;// press the close button to switch game state
 			
 			//keydown handling - we should to the opposite on key-up for direction controls (generally)
 		case SDL_KEYDOWN:
@@ -241,7 +250,7 @@ void Renderer::renderInput()
 			if (!_camEvent.key.repeat)
 				switch (_camEvent.key.keysym.sym)
 				{
-					//case SDLK_ESCAPE: _GameState = GameState::EXIT; break;
+					case SDLK_ESCAPE: _GameState = GameState::EXIT; break;
 
 					//top tank
 					case SDLK_d:  translateSpeed.x += translateAcceleration.x; break;
@@ -271,6 +280,7 @@ void Renderer::renderInput()
 					case SDLK_KP_2: eyePointMove.y += eyePointAcceleration.y; break;
 
 					case SDLK_m: simLength = 0.0002; break;
+					
 				}
 			break;
 
@@ -306,6 +316,7 @@ void Renderer::renderInput()
 				case SDLK_KP_2: eyePointMove.y -= eyePointAcceleration.y; break;
 
 				case SDLK_m: simLength = 0.002; break;
+			
 			}
 			break;
 			//mouse handling
@@ -340,6 +351,7 @@ void Renderer::updateSim()
 	const glm::vec3 unitZ = glm::vec3(0, 0, 1);
 	const glm::vec3 unit45 = glm::normalize(glm::vec3(0, 0, 1));
 
+	modelMatrix = glm::translate(modelPosition) * glm::mat4_cast(glm::quat(modelRotation)) * glm::scale(modelScale);
 
 	float rotate = (float)simLength * rotateSpeed;
 	rotationMatrix = glm::rotate(rotationMatrix, rotate, unit45);
@@ -387,3 +399,6 @@ void Renderer::updateSim()
 
 }
 
+GameState Renderer::getState() {
+	return _GameState;
+}

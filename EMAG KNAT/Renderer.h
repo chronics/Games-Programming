@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "Error.h"
+#include "GameState.h"
 
 class Renderer
 {
@@ -13,7 +14,7 @@ public:
 	GLint positionLocation, colorLocation, modelMatrixLocation, viewMatrixLocation, projectionMatrixLocation;
 	GLuint theProgram, vertexBufferObject, vertexBufferObject1, vertexBufferObject2D, vao;
 	
-	
+	glm::mat4 cubeTransaltionMatrix, cubeTransaltionMatrix1;
 	
 	void runRender();
 
@@ -22,14 +23,14 @@ public:
 
 	void updateSim();
 	void renderInput();
-	//void gameLoop();
 
+	GameState getState();
 
 private:
 
 	void initializeProgram();
 	void initializeVertexBuffer();
 
-	
+	GameState _GameState;
 };
 

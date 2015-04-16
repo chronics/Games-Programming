@@ -2,6 +2,7 @@
 #include "vertexData.h"
 
 
+
 Renderer _draw;
 
 engine::engine()
@@ -133,35 +134,9 @@ void engine::gameLoop()
 {
 	while (_GameState != GameState::EXIT)
 	{
-
+		_GameState = _draw.getState();
 		renderGame();
-
 	}
 }
 
-void engine::gameInput()
-{
-	SDL_Event _event;
 
-	while (SDL_PollEvent(&_event)) {
-		switch (_event.type)
-		{
-
-			case SDL_QUIT: _GameState = GameState::EXIT; break;// press the close button to switch game state
-
-			//keydown handling - we should to the opposite on key-up for direction controls (generally)
-		case SDL_KEYDOWN:
-
-			if (!_event.key.repeat)
-				switch (_event.key.keysym.sym)
-			{
-				case SDLK_ESCAPE: _GameState = GameState::EXIT; break;
-			}
-			break;
-
-		default: //one dose not simply forget a default case
-			break;
-
-		}
-	}
-}
