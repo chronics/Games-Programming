@@ -41,7 +41,13 @@ glm::vec3 rightVar(
 
 glm::vec3 modelPosition = glm::vec3(-4.0f, 4.0f, 0.0f);
 glm::vec3 modelScale = glm::vec3(1.0f, 1.0f, 1.0f);
-glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f); // euler angles in radians
+
+glm::vec3 modelPosition1 = glm::vec3(4.0f, -4.0f, 0.0f);
+glm::vec3 modelScale1 = glm::vec3(1.0f, 1.0f, 1.0f);
+glm::vec3 modelRotation1 = glm::vec3(0.0f, 0.0f, 0.0f); // euler angles in radians
+
+
 
 Renderer::Renderer()
 {
@@ -226,7 +232,9 @@ void Renderer::render()
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(modelMatrix1)));
 	glDrawArrays(GL_TRIANGLES, 0, 72);
 
+	modelMatrix = glm::translate(modelPosition) * glm::mat4_cast(glm::quat(modelRotation)) * glm::scale(modelScale);
 
+	modelMatrix1 = glm::translate(modelPosition1) * glm::mat4_cast(glm::quat(modelRotation1)) * glm::scale(modelScale1);
 
 	glDisableVertexAttribArray(0); 
 	glUseProgram(0);
@@ -344,14 +352,22 @@ void Renderer::renderInput()
 
 void Renderer::updateSim()
 {
-	
-
 	const glm::vec3 unitX = glm::vec3(1, 0, 0);
 	const glm::vec3 unitY = glm::vec3(0, 1, 0);
 	const glm::vec3 unitZ = glm::vec3(0, 0, 1);
 	const glm::vec3 unit45 = glm::normalize(glm::vec3(0, 0, 1));
 
-	modelMatrix = glm::translate(modelPosition) * glm::mat4_cast(glm::quat(modelRotation)) * glm::scale(modelScale);
+
+	
+
+
+
+
+
+
+
+
+
 
 	float rotate = (float)simLength * rotateSpeed;
 	rotationMatrix = glm::rotate(rotationMatrix, rotate, unit45);
