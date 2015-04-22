@@ -39,13 +39,13 @@ glm::vec3 rightVar(
 	cos(horizontalAngle - 3.14f / 2.0f));
 
 
-glm::vec3 modelPosition = glm::vec3(-4.0f, 4.0f, 0.0f);
-glm::vec3 modelScale = glm::vec3(1.0f, 1.0f, 1.0f);
-glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f); // euler angles in radians
+glm::vec3 modelPosition = glm::vec3(-4.0f, 4.0f, 0.0f);  //where is starts
+glm::vec3 modelScale = glm::vec3(1.0f, 1.0f, 1.0f); //what size it starts
+float modelRotationZ = 0.0f; // angles in radians around Z
 
 glm::vec3 modelPosition1 = glm::vec3(4.0f, -4.0f, 0.0f);
 glm::vec3 modelScale1 = glm::vec3(1.0f, 1.0f, 1.0f);
-glm::vec3 modelRotation1 = glm::vec3(0.0f, 0.0f, 0.0f); // euler angles in radians
+float modelRotationZ1 = 0.0f; // angles in radians around Z
 
 
 
@@ -232,10 +232,6 @@ void Renderer::render()
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(modelMatrix1)));
 	glDrawArrays(GL_TRIANGLES, 0, 72);
 
-	modelMatrix = glm::translate(modelPosition) * glm::mat4_cast(glm::quat(modelRotation)) * glm::scale(modelScale);
-
-	modelMatrix1 = glm::translate(modelPosition1) * glm::mat4_cast(glm::quat(modelRotation1)) * glm::scale(modelScale1);
-
 	glDisableVertexAttribArray(0); 
 	glUseProgram(0);
 }
@@ -357,34 +353,37 @@ void Renderer::updateSim()
 	const glm::vec3 unitZ = glm::vec3(0, 0, 1);
 	const glm::vec3 unit45 = glm::normalize(glm::vec3(0, 0, 1));
 
+	//update our representaion of the cube
 
-	
+	modelScale = modelScale; //if scale changes over time update it here
 
+	float rotateNow = (float)simLength * rotateSpeed; //how much to rotate now?
+	modelRotationZ += rotateNow; //apply
 
+	glm::vec3 translateNow = float(simLength) * translateSpeed; //how much to translate now?
+	modelPosition += translateNow;
 
-
-
-
-
-
-
-
-	float rotate = (float)simLength * rotateSpeed;
-	rotationMatrix = glm::rotate(rotationMatrix, rotate, unit45);
-
-	glm::vec3 translate = float(simLength) * translateSpeed; //scale the translationSpeed by time to get the translation amount
-	translationMatrix = glm::translate(translationMatrix, translate);
-
-	modelMatrix = translationMatrix * rotationMatrix;
+	//calculate modelMatrix
+	glm::mat4 scaleMatrix = glm::scale(modelScale); // set matrix to scale var
+	glm::mat4 rotationMatrix = glm::rotate(modelRotationZ, unitZ);
+	glm::mat4 translationMatrix = glm::translate(modelPosition);
+	modelMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 
 
-	float rotate1 = (float)simLength * rotateSpeed1;
-	rotationMatrix1 = glm::rotate(rotationMatrix1, rotate1, unit45);
-	
-	glm::vec3 translate1 = float(simLength) * translateSpeed1; //scale the translationSpeed by time to get the translation amount
-	translationMatrix1 = glm::translate(translationMatrix1, translate1);
+	////1
+	modelScale1 = modelScale1; //if scale changes over time update it here
 
-	modelMatrix1 = translationMatrix1 * rotationMatrix1;
+	float rotateNow1 = (float)simLength * rotateSpeed1; //how much to rotate now?
+	modelRotationZ1 += rotateNow1; //apply
+
+	glm::vec3 translateNow1 = float(simLength) * translateSpeed1; //how much to translate now?
+	modelPosition1 += translateNow1;
+
+	//calculate modelMatrix
+	glm::mat4 scaleMatrix1 = glm::scale(modelScale1); // set matrix to scale var
+	glm::mat4 rotationMatrix1 = glm::rotate(modelRotationZ1, unitZ);
+	glm::mat4 translationMatrix1 = glm::translate(modelPosition1);
+	modelMatrix1 = translationMatrix1 * rotationMatrix1 * scaleMatrix1;
 
 
 	//camera
