@@ -384,6 +384,8 @@ void Renderer::renderInput()
 
 void Renderer::updateSim()
 {
+
+
 	glm::vec3 modelPositionW = glm::vec3(random1, random2, random3);
 	glm::vec3 modelScaleW = glm::vec3(1.0f, 1.0f, 1.0f);
 	float modelRotationZW = 0.0f; // angles in radians around Z
