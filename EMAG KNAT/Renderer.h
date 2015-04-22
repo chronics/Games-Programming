@@ -10,7 +10,7 @@ public:
 	Renderer();
 	~Renderer();
 
-	glm::mat4 modelMatrix, viewMatrix, projectionMatrix, rotationMatrix, translationMatrix, modelMatrix1, rotationMatrix1, translationMatrix1;
+	glm::mat4 modelMatrix, viewMatrix, projectionMatrix, rotationMatrix, translationMatrix, modelMatrix1, rotationMatrix1, translationMatrix1, modelMatrixW, rotationMatrixW, translationMatrixW;
 	GLint positionLocation, colorLocation, modelMatrixLocation, viewMatrixLocation, projectionMatrixLocation;
 	GLuint theProgram, vertexBufferObject, vertexBufferObject1, vertexBufferObject2D, vao;
 	
@@ -23,13 +23,17 @@ public:
 
 	void updateSim();
 	void renderInput();
-
+	
+	void waypoint();
+	
 	GameState getState();
-
+	
 private:
 
 	void initializeProgram();
 	void initializeVertexBuffer();
+	void collisionGreen();
+	void collisionRed();
 
 	GameState _GameState;
 };

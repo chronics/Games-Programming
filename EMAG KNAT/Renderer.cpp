@@ -6,19 +6,26 @@ bool start = true;
 
 double simLength = 0.002;
 
+int p1Score, p2Score;
+
 //motion variables
 float rotateSpeed = 0.0f; //rate of change of the rotate - in radians per second
 float rotationAcceleration = 3.0f;
 
-
 float rotateSpeed1 = 0.0f; //rate of change of the rotate - in radians per second
 float rotationAcceleration1 = 3.0f;
+
+float rotateSpeedW = 0.0f; //rate of change of the rotate - in radians per second
+float rotationAccelerationW = 3.0f;
 
 glm::vec3 translateSpeed = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 translateAcceleration = glm::vec3(4.0f, 4.0f, 4.0f);
 
 glm::vec3 translateSpeed1 = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 translateAcceleration1 = glm::vec3(4.0f, 4.0f, 4.0f);
+
+glm::vec3 translateSpeedW = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 translateAccelerationW = glm::vec3(4.0f, 4.0f, 4.0f);
 
 // camera variables
 glm::vec3 eyePoint = glm::vec3(0, 0, 5);
@@ -38,6 +45,7 @@ glm::vec3 rightVar(
 	sin(horizontalAngle - 3.14f / 2.0f), 0,
 	cos(horizontalAngle - 3.14f / 2.0f));
 
+float random1, random2, random3 = 0.0f;
 
 glm::vec3 modelPosition = glm::vec3(-4.0f, 4.0f, 0.0f);  //where is starts
 glm::vec3 modelScale = glm::vec3(1.0f, 1.0f, 1.0f); //what size it starts
@@ -47,6 +55,18 @@ glm::vec3 modelPosition1 = glm::vec3(4.0f, -4.0f, 0.0f);
 glm::vec3 modelScale1 = glm::vec3(1.0f, 1.0f, 1.0f);
 float modelRotationZ1 = 0.0f; // angles in radians around Z
 
+float cube1left =	-4.25f;
+float cube1right =	-3.75f;
+float cube1bottom =	 3.75f;
+float cube1top =	 4.25f;
+
+float cube2left =	 3.75f;
+float cube2right =	 4.25f;
+float cube2bottom = -4.25f;
+float cube2top =	-3.75f;
+
+float wayX = random1;
+float wayY = random2;
 
 
 Renderer::Renderer()
@@ -59,12 +79,15 @@ Renderer::~Renderer()
 }
 
 void Renderer::runRender()
-{
+{	
+	
 	renderInput();
 	updateSim();
 
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	
 
 	render();
 }
@@ -203,6 +226,11 @@ void Renderer::initializeVertexBuffer()
 		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeRed), cubeRed, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	glGenBuffers(1, &vertexBufferObject2D);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject2D);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(_waypointQuad), _waypointQuad, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 void Renderer::render()
@@ -223,8 +251,7 @@ void Renderer::render()
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(modelMatrix)));
 	glDrawArrays(GL_TRIANGLES, 0, 72);
 
-	//cube
-	
+	//cubeRed
 	size_t colorData1 = sizeof(cubeRed) / 2;
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject1);
 	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
@@ -232,14 +259,20 @@ void Renderer::render()
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(modelMatrix1)));
 	glDrawArrays(GL_TRIANGLES, 0, 72);
 
+	size_t colorDataQ = sizeof(_waypointQuad) / 2;
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject2D);
+	glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorDataQ);
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(modelMatrixW)));
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
 	glDisableVertexAttribArray(0); 
 	glUseProgram(0);
 }
 
+
 void Renderer::renderInput()
 {
-
-
 	SDL_Event _camEvent;
 
 	while (SDL_PollEvent(&_camEvent)) {
@@ -257,21 +290,22 @@ void Renderer::renderInput()
 					case SDLK_ESCAPE: _GameState = GameState::EXIT; break;
 
 					//top tank
-					case SDLK_d:  translateSpeed.x += translateAcceleration.x; break;
-					case SDLK_a:  translateSpeed.x -= translateAcceleration.x; break;
+					case SDLK_d:		translateSpeed.x += translateAcceleration.x; cube1left += translateAcceleration.x; cube1right += translateAcceleration.x;  break;
+					case SDLK_a:		translateSpeed.x -= translateAcceleration.x; cube1left -= translateAcceleration.x; cube1right -= translateAcceleration.x;  break;
 
-					case SDLK_w:    translateSpeed.y += translateAcceleration.y; break;
-					case SDLK_s:  translateSpeed.y -= translateAcceleration.y; break;
+					case SDLK_w:		translateSpeed.y += translateAcceleration.y; cube1top += translateAcceleration.y; cube1bottom += translateAcceleration.y; break;
+					case SDLK_s:		translateSpeed.y -= translateAcceleration.y; cube1top -= translateAcceleration.y; cube1bottom -= translateAcceleration.y; break;
 
-					case SDLK_q: rotateSpeed += rotationAcceleration; break;
-					case SDLK_e: rotateSpeed -= rotationAcceleration; break;
+					//case SDLK_q: rotateSpeed += rotationAcceleration; break;
+					//case SDLK_e: rotateSpeed -= rotationAcceleration; break;
 
 					//bottom tank
-					case SDLK_LEFT: translateSpeed1.x -= translateAcceleration1.x; break;
-					case SDLK_RIGHT: translateSpeed1.x += translateAcceleration1.x; break;
+						
+					case SDLK_LEFT:		translateSpeed1.x -= translateAcceleration1.x; cube2left -= translateAcceleration.x; cube2right -= translateAcceleration.x;  break;
+					case SDLK_RIGHT:	translateSpeed1.x += translateAcceleration1.x; cube2left += translateAcceleration.x; cube2right += translateAcceleration.x; break;
 
-					case SDLK_UP: translateSpeed1.y += translateAcceleration1.y; break;
-					case SDLK_DOWN: translateSpeed1.y -= translateAcceleration1.y; break;
+					case SDLK_UP:		translateSpeed1.y += translateAcceleration1.y; cube2top += translateAcceleration.y; cube2bottom += translateAcceleration.y; break;
+					case SDLK_DOWN:		translateSpeed1.y -= translateAcceleration1.y; cube2top -= translateAcceleration.y; cube2bottom -= translateAcceleration.y; break;
 
 					//camera
 					case SDLK_KP_5: eyePointMove.z -= eyePointAcceleration.z; break;
@@ -285,6 +319,8 @@ void Renderer::renderInput()
 
 					case SDLK_m: simLength = 0.0002; break;
 					
+					case SDLK_p: std::cout << "Player 1 Score" << "\t" << "Player 2 Score" << "\n" << p1Score << "\t\t" << p2Score << "\n"; break;
+					case SDLK_n: waypoint(); std::cout << random1 << " " << random2 << " " << random3 << "\n"; break;
 				}
 			break;
 
@@ -293,21 +329,21 @@ void Renderer::renderInput()
 			switch (_camEvent.key.keysym.sym)
 			{
 				//top tank 
-				case SDLK_d:  translateSpeed.x -= translateAcceleration.x; break;
-				case SDLK_a: translateSpeed.x += translateAcceleration.x; break;
+				case SDLK_d:		translateSpeed.x -= translateAcceleration.x; cube1left -= translateAcceleration.x; cube1right -= translateAcceleration.x; break;
+				case SDLK_a:		translateSpeed.x += translateAcceleration.x; cube1left += translateAcceleration.x; cube1right += translateAcceleration.x; break;
 
-				case SDLK_w:    translateSpeed.y -= translateAcceleration.y; break;
-				case SDLK_s:  translateSpeed.y += translateAcceleration.y; break;
+				case SDLK_w:		translateSpeed.y -= translateAcceleration.y; cube1top -= translateAcceleration.y; cube1bottom -= translateAcceleration.y; break;
+				case SDLK_s:		translateSpeed.y += translateAcceleration.y; cube1top += translateAcceleration.y; cube1bottom += translateAcceleration.y; break;
 
-				case SDLK_q: rotateSpeed -= rotationAcceleration; break;
-				case SDLK_e: rotateSpeed += rotationAcceleration; break;
+				//case SDLK_q: rotateSpeed -= rotationAcceleration; break;
+				//case SDLK_e: rotateSpeed += rotationAcceleration; break;
 
 				//bottom tank 
-				case SDLK_LEFT: translateSpeed1.x += translateAcceleration1.x; break;
-				case SDLK_RIGHT: translateSpeed1.x -= translateAcceleration1.x; break;
+				case SDLK_LEFT:		translateSpeed1.x += translateAcceleration1.x; cube2left += translateAcceleration.x; cube2right += translateAcceleration.x; break;
+				case SDLK_RIGHT:	translateSpeed1.x -= translateAcceleration1.x; cube2left -= translateAcceleration.x; cube2right -= translateAcceleration.x; break;
 
-				case SDLK_UP: translateSpeed1.y -= translateAcceleration1.y; break;
-				case SDLK_DOWN: translateSpeed1.y += translateAcceleration1.y; break;
+				case SDLK_UP:		translateSpeed1.y -= translateAcceleration1.y; cube2top -= translateAcceleration.y; cube2bottom -= translateAcceleration.y; break;
+				case SDLK_DOWN:		translateSpeed1.y += translateAcceleration1.y; cube2top += translateAcceleration.y; cube2bottom += translateAcceleration.y; break;
 
 				//camera
 				case SDLK_KP_5: eyePointMove.z += eyePointAcceleration.z; break;
@@ -348,6 +384,11 @@ void Renderer::renderInput()
 
 void Renderer::updateSim()
 {
+	glm::vec3 modelPositionW = glm::vec3(random1, random2, random3);
+	glm::vec3 modelScaleW = glm::vec3(1.0f, 1.0f, 1.0f);
+	float modelRotationZW = 0.0f; // angles in radians around Z
+
+
 	const glm::vec3 unitX = glm::vec3(1, 0, 0);
 	const glm::vec3 unitY = glm::vec3(0, 1, 0);
 	const glm::vec3 unitZ = glm::vec3(0, 0, 1);
@@ -386,6 +427,23 @@ void Renderer::updateSim()
 	modelMatrix1 = translationMatrix1 * rotationMatrix1 * scaleMatrix1;
 
 
+	//waypoint 
+	float rotateNowW = (float)simLength * rotateSpeedW; //how much to rotate now?
+	modelRotationZW += rotateNowW; //apply
+
+	glm::vec3 translateNowW = float(simLength) * translateSpeedW; //how much to translate now?
+	modelPositionW += translateNowW;
+
+	//calculate modelMatrix
+	glm::mat4 scaleMatrixW = glm::scale(modelScaleW); // set matrix to scale var
+	glm::mat4 rotationMatrixW = glm::rotate(modelRotationZW, unitZ);
+	glm::mat4 translationMatrixW = glm::translate(modelPositionW);
+	modelMatrixW = translationMatrixW * rotationMatrixW * scaleMatrixW;
+	
+	
+
+	
+
 	//camera
 	eyePoint += eyePointMove;
 
@@ -412,6 +470,53 @@ void Renderer::updateSim()
 
 	projectionMatrix = glm::perspective(fovyRadians, aspectRatio, nearClipPlane, farClipPlane);
 
+	collisionGreen();
+	collisionRed();
+
+	/*
+	if (p1Score <= 10){
+		std::cout << "player 1 wins";
+		system("Pause");
+		SDL_Quit();
+	}
+
+	if (p2Score <= 10){
+		std::cout << "player 2 wins";
+		system("Pause");
+		SDL_Quit();
+	}
+	*/
+}
+
+void Renderer::collisionGreen()
+{
+	if ((cube1top < wayY || cube1bottom > wayY) && (cube1left > wayX || cube1right < wayX)){
+		//no collision
+	}
+	else
+	{
+		p1Score++;//give player point
+		waypoint();// draw new waypoint
+	}
+}
+
+void Renderer::collisionRed()
+{
+	if ((cube2top < wayY || cube2bottom > wayY) && (cube2left > wayX || cube2right < wayX)){
+		//no collision
+	}
+	else
+	{
+		p2Score++;//give player point
+		waypoint();// draw new waypoint
+	}
+}
+
+
+
+void Renderer::waypoint(){
+	random1 = -4.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (4.0f - -4.0f)));	
+	random2 = -4.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (4.0f - -4.0f)));
 }
 
 GameState Renderer::getState() {
