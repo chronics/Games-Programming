@@ -420,6 +420,11 @@ void Renderer::updateSim()
 	glm::vec3 translateNow1 = float(simLength) * translateSpeed1; //how much to translate now?
 	modelPosition1 += translateNow1;
 
+	cube1bottom += translateSpeed.y * (float)simLength;
+	cube1top += translateSpeed.y * (float)simLength;
+	cube1left += translateSpeed.x * (float)simLength;
+	cube1right += translateSpeed.x * (float)simLength;
+
 	//calculate modelMatrix
 	glm::mat4 scaleMatrix1 = glm::scale(modelScale1); // set matrix to scale var
 	glm::mat4 rotationMatrix1 = glm::rotate(modelRotationZ1, unitZ);
@@ -434,15 +439,18 @@ void Renderer::updateSim()
 	glm::vec3 translateNowW = float(simLength) * translateSpeedW; //how much to translate now?
 	modelPositionW += translateNowW;
 
+	cube2bottom += translateSpeed1.y * (float)simLength;
+	cube2top += translateSpeed1.y * (float)simLength;
+	cube2left += translateSpeed1.x * (float)simLength;
+	cube2right += translateSpeed1.x * (float)simLength;
+
 	//calculate modelMatrix
 	glm::mat4 scaleMatrixW = glm::scale(modelScaleW); // set matrix to scale var
 	glm::mat4 rotationMatrixW = glm::rotate(modelRotationZW, unitZ);
 	glm::mat4 translationMatrixW = glm::translate(modelPositionW);
 	modelMatrixW = translationMatrixW * rotationMatrixW * scaleMatrixW;
-	
-	
 
-	
+
 
 	//camera
 	eyePoint += eyePointMove;
@@ -473,19 +481,18 @@ void Renderer::updateSim()
 	collisionGreen();
 	collisionRed();
 
-	/*
-	if (p1Score <= 10){
+
+	if (p1Score >= 100){
 		std::cout << "player 1 wins";
 		system("Pause");
 		SDL_Quit();
 	}
 
-	if (p2Score <= 10){
+	if (p2Score >= 100){
 		std::cout << "player 2 wins";
 		system("Pause");
 		SDL_Quit();
 	}
-	*/
 }
 
 void Renderer::collisionGreen()
@@ -495,9 +502,9 @@ void Renderer::collisionGreen()
 	}
 	else
 	{
-		std::cout << "green collision";
-		//p1Score++;//give player point
-		//waypoint();// draw new waypoint
+		std::cout << "green collision ";
+		p1Score++;//give player point
+		waypoint();// draw new waypoint
 	}
 }
 
@@ -508,9 +515,9 @@ void Renderer::collisionRed()
 	}
 	else
 	{
-		std::cout << "red collision";
-		//p2Score++;//give player point
-		//waypoint();// draw new waypoint
+		std::cout << "red collision ";
+		p2Score++;//give player point
+		waypoint();// draw new waypoint
 	}
 }
 
