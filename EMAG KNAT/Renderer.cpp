@@ -495,8 +495,9 @@ void Renderer::collisionGreen()
 	}
 	else
 	{
-		p1Score++;//give player point
-		waypoint();// draw new waypoint
+		std::cout << "green collision";
+		//p1Score++;//give player point
+		//waypoint();// draw new waypoint
 	}
 }
 
@@ -507,8 +508,9 @@ void Renderer::collisionRed()
 	}
 	else
 	{
-		p2Score++;//give player point
-		waypoint();// draw new waypoint
+		std::cout << "red collision";
+		//p2Score++;//give player point
+		//waypoint();// draw new waypoint
 	}
 }
 
