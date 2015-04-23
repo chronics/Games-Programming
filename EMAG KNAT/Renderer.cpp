@@ -65,8 +65,8 @@ float cube2right =	 4.25f;
 float cube2bottom = -4.25f;
 float cube2top =	-3.75f;
 
-float wayX = random1;
-float wayY = random2;
+float wayX;
+float wayY;
 
 
 Renderer::Renderer()
@@ -406,6 +406,11 @@ void Renderer::updateSim()
 	glm::vec3 translateNow = float(simLength) * translateSpeed; //how much to translate now?
 	modelPosition += translateNow;
 
+	cube1bottom += translateSpeed.y * (float)simLength;
+	cube1top += translateSpeed.y * (float)simLength;
+	cube1left += translateSpeed.x * (float)simLength;
+	cube1right += translateSpeed.x * (float)simLength;
+
 	//calculate modelMatrix
 	glm::mat4 scaleMatrix = glm::scale(modelScale); // set matrix to scale var
 	glm::mat4 rotationMatrix = glm::rotate(modelRotationZ, unitZ);
@@ -422,10 +427,10 @@ void Renderer::updateSim()
 	glm::vec3 translateNow1 = float(simLength) * translateSpeed1; //how much to translate now?
 	modelPosition1 += translateNow1;
 
-	cube1bottom += translateSpeed.y * (float)simLength;
-	cube1top += translateSpeed.y * (float)simLength;
-	cube1left += translateSpeed.x * (float)simLength;
-	cube1right += translateSpeed.x * (float)simLength;
+	cube2bottom += translateSpeed1.y * (float)simLength;
+	cube2top += translateSpeed1.y * (float)simLength;
+	cube2left += translateSpeed1.x * (float)simLength;
+	cube2right += translateSpeed1.x * (float)simLength;
 
 	//calculate modelMatrix
 	glm::mat4 scaleMatrix1 = glm::scale(modelScale1); // set matrix to scale var
@@ -441,10 +446,8 @@ void Renderer::updateSim()
 	glm::vec3 translateNowW = float(simLength) * translateSpeedW; //how much to translate now?
 	modelPositionW += translateNowW;
 
-	cube2bottom += translateSpeed1.y * (float)simLength;
-	cube2top += translateSpeed1.y * (float)simLength;
-	cube2left += translateSpeed1.x * (float)simLength;
-	cube2right += translateSpeed1.x * (float)simLength;
+	wayX = random1;
+	wayY = random2;
 
 	//calculate modelMatrix
 	glm::mat4 scaleMatrixW = glm::scale(modelScaleW); // set matrix to scale var
@@ -484,14 +487,16 @@ void Renderer::updateSim()
 	collisionRed();
 
 
-	if (p1Score >= 100){
-		std::cout << "player 1 wins";
+	if (p1Score >= 10){
+		std::cout << "player 1 wins ";
+		std::cout << "player 1 score = " << p1Score << "where player 2 score = " << p2Score;
 		system("Pause");
 		SDL_Quit();
 	}
 
-	if (p2Score >= 100){
-		std::cout << "player 2 wins";
+	if (p2Score >= 10){
+		std::cout << "player 2 wins ";
+		std::cout << "player 2 score = " << p2Score << "where player 1 score = " << p1Score;
 		system("Pause");
 		SDL_Quit();
 	}
